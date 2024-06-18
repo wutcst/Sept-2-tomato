@@ -8,11 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("player")
-public class Player {
-    private Long currentRoomID;
-    private Long currentWeight;
-    private long maxCarryWeight;
-    private long playerID;
-    private String playerName;
+@TableName("playeritems")
+public class PlayerItems {
+    private Long itemID;
+    private Long playerID;
 }
