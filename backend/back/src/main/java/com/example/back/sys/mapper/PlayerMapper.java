@@ -7,4 +7,8 @@ import java.util.List;
 public interface PlayerMapper {
 
     List<Player> getAllPlayers();
+
+    Player getPlayerByName(String playerName);
+
+    List<Player> judgeExist(Player player);
 }

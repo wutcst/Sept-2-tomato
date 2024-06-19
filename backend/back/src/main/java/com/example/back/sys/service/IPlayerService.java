@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface IPlayerService {
     List<Player> gatAll();
+
+    Player findByPlayerName(String playerName);
+
+    boolean login(Player player);
 }

@@ -5,4 +5,10 @@
     <select id="getAllPlayers" resultType="com.example.back.sys.entity.Player">
         SELECT * FROM player
     </select>
+    <select id="getPlayerByName" parameterType="java.lang.String" resultType="com.example.back.sys.entity.Player">
+        SELECT * FROM player WHERE PlayerName = #{playerName}
+    </select>
+    <select id="judgeExist" resultType="com.example.back.sys.entity.Player">
+        SELECT * FROM player WHERE PlayerName = #{playerName} AND PassWord =#{passWord}
+    </select>
 </mapper>

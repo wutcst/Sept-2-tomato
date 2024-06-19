@@ -18,4 +18,14 @@ public class PlayerService implements IPlayerService {
     public List<Player> gatAll() {
         return playerMapper.getAllPlayers();
     }
+
+    @Override
+    public Player findByPlayerName(String playerName) {
+        return playerMapper.getPlayerByName(playerName);
+    }
+
+    @Override
+    public boolean login(Player player) {
+        return playerMapper.judgeExist(player).size()!=0;
+    }
 }

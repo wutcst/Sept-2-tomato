@@ -22,4 +22,23 @@ public class PlayerController {
         List<Player> players = iPlayerService.gatAll();
         return Result.success(players);
     }
+
+    @PostMapping("/getPlayerInfo")
+    public Result getPlayerInfo(@RequestBody String playerName)
+    {
+        Player player = iPlayerService.findByPlayerName(playerName);
+        if(player == null) return Result.fail("找不到该用户");
+        return Result.success(player);
+    }
+
+    @PostMapping("/login")
+    public Result login(@RequestBody Player player){
+        System.out.println(player.getPlayerName());
+        System.out.println(player.getPassWord());
+        if(iPlayerService.login(player)){
+            return Result.success();
+        }
+        return Result.fail("用户名或密码输入错误");
+    }
+
 }
