@@ -3,9 +3,11 @@ package com.example.back.sys.controller;
 import com.example.back.sys.service.IPlayerService;
 import com.example.back.sys.entity.Player;
 import com.example.back.sys.Result;
+import com.example.back.sys.token.TokenGenerate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,7 +36,12 @@ public class PlayerController {
     @PostMapping("/login")
     public Result login(@RequestBody Player player){
         if(iPlayerService.login(player)){
-            return Result.success();
+            String token;
+            token = new TokenGenerate().generateToken(player.getPlayerName());
+            List<String> l = new ArrayList<>();
+            l.add(token);
+            l.add(player.getPlayerName());
+            return Result.success(l);
         }
         return Result.fail("用户名或密码输入错误");
     }
