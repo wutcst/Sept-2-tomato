@@ -11,4 +11,6 @@ public interface PlayerMapper {
     Player getPlayerByName(String playerName);
 
     List<Player> judgeExist(Player player);
+
+    boolean registerPlayer(Player player);
 }

@@ -33,12 +33,16 @@ public class PlayerController {
 
     @PostMapping("/login")
     public Result login(@RequestBody Player player){
-        System.out.println(player.getPlayerName());
-        System.out.println(player.getPassWord());
         if(iPlayerService.login(player)){
             return Result.success();
         }
         return Result.fail("用户名或密码输入错误");
     }
 
+    @PostMapping("/register")
+    public Result register(@RequestBody Player player){
+        if(iPlayerService.findByPlayerName(player.getPlayerName())!=null) return Result.fail("该用户已存在");
+        if(iPlayerService.register(player)) return Result.success("注册成功");
+        return Result.fail("服务器异常，注册失败");
+    }
 }

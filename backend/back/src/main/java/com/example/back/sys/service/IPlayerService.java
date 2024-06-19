@@ -10,4 +10,6 @@ public interface IPlayerService {
     Player findByPlayerName(String playerName);
 
     boolean login(Player player);
+
+    boolean register(Player player);
 }
