@@ -51,19 +51,19 @@
             login() {
                 // 发送登录请求到后端
                 this.$axios.post('http://localhost:8080/login', {
-                    name: this.username,
-                    password: this.password
+                    playName: this.username,
+                    passWord: this.password
                 })
                     .then(response => {
                         // 处理登录成功的情况
                         console.log(response.data);
-                        if (response.data.code === 401) { // 根据后端返回的状态码判断请求是否成功
-                            this.$message.error(response.data.msg); // 显示失败消息
-                        } else {
+                        if (response.data.code === 200) { // 根据后端返回的状态码判断请求是否成功
                             // 将用户的id存储到localStorage中
                             localStorage.setItem('userId', response.data.data);
                             this.$router.push("/home-main");
                             this.$message.success(response.data.msg); // 显示成功消息
+                        } else {
+                            this.$message.error(response.data.msg); // 显示失败消息
                         }
                     })
                     .catch(error => {

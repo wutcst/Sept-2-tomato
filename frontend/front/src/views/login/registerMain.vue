@@ -68,16 +68,16 @@
                
                 // 发送注册请求到后端
                 axios.post('http://localhost:8080/register', {
-                    name: this.username,
-                    password: this.password,
+                    playerName: this.username,
+                    passWord: this.password,
                     email: this.email,
                 })
                     .then(response => {
-                        if (response.data.code === 400 || response.data.code === 401 || response.data.code === 500) {
-                            this.$message.error(response.data.msg); // 显示失败消息
-                        } else {
+                        if (response.data.code === 200) {
                             this.$message.success(response.data.msg);
-                            this.$router.push("/login-main");
+                            this.$router.push("/login-main");  
+                        } else {
+                            this.$message.error(response.data.msg); // 显示失败消息
                         }
                     })
                     .catch(error => {

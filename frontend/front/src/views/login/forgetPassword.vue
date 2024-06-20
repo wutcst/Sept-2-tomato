@@ -64,7 +64,7 @@
                 if (this.newPassword === this.confirmPassword) {
                     // 发送修改密码请求等等
                     const data = {
-                        username: this.username,
+                        playerName: this.username,
                         email: this.email,
                         newPassword: this.newPassword
                     };
@@ -72,7 +72,7 @@
                     this.$axios.post('/reset-password', data)
                         .then(response => {
                             console.log(response.data);
-                            if (response.data.code === 30000) { // 根据后端返回的状态码判断请求是否成功
+                            if (response.data.code === 200) { // 根据后端返回的状态码判断请求是否成功
                                 this.$router.push("/login-main");
                                 this.$message.success(response.data.msg); // 显示成功消息
                             } else {
