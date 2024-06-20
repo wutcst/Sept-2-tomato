@@ -1,4 +1,4 @@
 package com.example.back.sys.mapper;
 
-public class RoomMapper {
+public interface RoomMapper {
 }

@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.back.sys.mapper.ItemMapper">
+    <insert id="renewPlayerItem">
+        INSERT INTO playeritems VALUES(#{player.playerID},#{item.itemID})
+    </insert>
+
+    <update id="renewPlayer">
+        UPDATE player SET currentWeight = #{player.currentWeight} WHERE playerID = #{player.playerID};
+    </update>
+
+    <delete id="renewMap">
+        DELETE FROM roomitems WHERE RoomID = #{currentRoomID} AND ItemId = #{itemID} LIMIT 1;
+    </delete>
 
     <select id="getItemById" resultType="com.example.back.sys.entity.Item">
         SELECT * FROM item WHERE ItemID = #{itemID}

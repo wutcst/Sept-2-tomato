@@ -30,6 +30,7 @@ public class IntercepterConfig implements WebMvcConfigurer {
         excludePath.add("/player/getPlayerInfo"); //获取单个用户
         excludePath.add("/player/reset-password"); //修改用户密码
         excludePath.add("/item/getItemInfo");
+        excludePath.add("/item/take");
 
         //在登陆之后的网页中已经携带token，所以只需要放行登陆注册接口，
         //若放行其他接口，那么就相当于不需要登陆就可进行接口的使用
