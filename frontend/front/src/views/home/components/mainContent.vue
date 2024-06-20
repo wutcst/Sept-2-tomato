@@ -20,28 +20,82 @@
 import mapImage from '../../../assets/images/map.jpg';
 import bananaImage from '../../../assets/images/banana.jpg';
 import cookieImage from '../../../assets/images/cookie.jpg';
-import zooGate from '../../../assets/images/zooGate.jpg'
+import zooGate from '../../../assets/images/zooGate.jpg';
+import monkeyZone from '../../../assets/images/monkeyZone.jpg';
+import lionZone from '../../../assets/images/lionZone.jpg';
+import elephantZone from '../../../assets/images/elephantZone.jpg';
+import zooExport from '../../../assets/images/export.jpg';
+
 export default {
+  props: {
+    currentRoomId: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
-      currentLocation: {
-        name: '入口',
-        backgroundImage: zooGate,
-        items: [
-          { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
-          { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
-          { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' },
-          // 其他物品信息
-        ],
+      locationMap: {
+        1: {
+          name: '入口',
+          backgroundImage: zooGate,
+          items: [
+            { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' },
+          ],
+        },
+        2: {
+          name: '猴子园区',
+          backgroundImage: monkeyZone,
+          items: [
+            { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
+            { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
+          ],
+        },
+         3: {
+          name: '狮子园区',
+          backgroundImage: lionZone,
+          items: [
+            { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
+          ],
+        },
+        4: {
+          name: '大象园区',
+          backgroundImage: elephantZone,
+          items: [
+            { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
+          ],
+        },
+        5: {
+          name: '出口',
+          backgroundImage: zooExport,
+          items: [
+          ],
+        },
+        // 其他位置的配置
       },
     };
   },
+  computed: {
+    currentLocation() {
+      return this.locationMap[this.currentRoomId] || this.locationMap[1];
+    }
+  },
+  watch: {
+    currentRoomId: {
+      handler(newVal) {
+        this.updateLocation(newVal);
+      },
+      immediate: true // 在组件创建时立即触发一次侦听器
+    }
+  },
   methods: {
+    updateLocation(roomId) {
+      this.currentLocation = this.locationMap[roomId] || this.locationMap[1];
+    },
     getItemImage(item) {
-      return item.imageId; // 根据物品的 imageId 拼接图片路径
+      return item.imageId;
     },
     takeItem(index) {
-      // 取出物品的逻辑，这里简单示例直接从当前位置移除物品
       const item = this.currentLocation.items.splice(index, 1)[0];
       alert(`你拿到了${item.name}`);
     },
@@ -57,11 +111,11 @@ export default {
   justify-content: flex-end;
   border-radius: 10px;
   margin-bottom: 10px;
-  background-size: cover; /* 背景图片充满容器 */
-  background-position: center; /* 居中对齐 */
+  background-size: cover;
+  background-position: center;
 }
 .map {
-  background-color: rgba(255, 255, 255, 0.7); /* 地图区域背景色 */
+  background-color: rgba(255, 255, 255, 0.7);
   padding: 10px;
   border-radius: 5px;
 }
@@ -83,6 +137,6 @@ export default {
   transition: transform 0.3s ease;
 }
 .item:hover img {
-  transform: scale(1.1); /* 鼠标悬停时放大图片 */
+  transform: scale(1.1);
 }
 </style>

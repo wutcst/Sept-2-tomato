@@ -59,7 +59,7 @@
                         console.log(response.data);
                         if (response.data.code === 200) { // 根据后端返回的状态码判断请求是否成功
                             // 将用户的id存储到localStorage中
-                            localStorage.setItem('userId', response.data.data);
+                            localStorage.setItem('playerId', response.data.data);
                             this.$router.push("/home-main");
                             this.$message.success(response.data.msg); // 显示成功消息
                         } else {
