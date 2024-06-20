@@ -27,7 +27,7 @@ public class ItemService {
         return true;
     }
 
-    public boolean checkItem(long playerID, Integer itemID) {
+    public boolean checkItem(Integer playerID, Integer itemID) {
         return itemMapper.check(playerID,itemID)!=null;
     }
 

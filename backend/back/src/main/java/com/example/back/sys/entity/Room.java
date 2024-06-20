@@ -11,11 +11,11 @@ import lombok.NoArgsConstructor;
 @TableName("room")
 public class Room {
     private String description;
-    private long roomID;
+    private Integer roomID;
     private String roomName;
 
-    private Long eastRoomID;
-    private Long northRoomID;
-    private Long southRoomID;
-    private Long westRoomID;
+    private Integer eastRoomID;
+    private Integer northRoomID;
+    private Integer southRoomID;
+    private Integer westRoomID;
 }

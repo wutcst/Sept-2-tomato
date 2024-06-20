@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("playeritems")
 public class PlayerItems {
-    private Long itemID;
-    private Long playerID;
+    private Integer itemID;
+    private Integer playerID;
 }

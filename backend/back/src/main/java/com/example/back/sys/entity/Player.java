@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("player")
 public class Player {
-    private Long currentRoomID;
-    private Long currentWeight;
-    private long maxCarryWeight;
-    private long playerID;
+    private Integer currentRoomID;
+    private Integer currentWeight;
+    private Integer maxCarryWeight;
+    private Integer playerID;
     private String playerName;
     private String passWord;
 }

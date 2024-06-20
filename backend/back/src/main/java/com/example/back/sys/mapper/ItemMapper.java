@@ -8,16 +8,16 @@ public interface ItemMapper {
 
     Item getItemById(Integer itemID);
 
-    void renewMap_delete(Long currentRoomID, long itemID);
+    void renewMap_delete(Integer currentRoomID, Integer itemID);
 
     void renewPlayer(Player player, Item item);
 
     void renewPlayerItem_add(Player player, Item item);
 
 
-    void renewMap_add(Long currentRoomID, long itemID);
+    void renewMap_add(Integer currentRoomID, Integer itemID);
 
     void renewPlayerItem_delete(Player player, Item item);
 
-    Object check(long playerID, Integer itemID);
+    Object check(Integer playerID, Integer itemID);
 }

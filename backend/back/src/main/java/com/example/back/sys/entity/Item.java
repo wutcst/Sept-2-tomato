@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @TableName("item")
 public class Item {
     private String description;
-    private Long isMagic;
-    private long itemID;
-    private String itemName;
-    private long weight;
+    private Integer isMagic;
+    private Integer itemID;
+    private Integer itemName;
+    private Integer weight;
 }
