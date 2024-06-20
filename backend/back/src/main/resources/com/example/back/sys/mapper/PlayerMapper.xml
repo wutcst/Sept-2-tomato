@@ -4,6 +4,9 @@
     <insert id="registerPlayer">
         INSERT INTO player(PlayerName,MaxCarryWeight,PassWord) VALUES (#{playerName},100,#{passWord})
     </insert>
+    <update id="renewPlayer">
+        UPDATE player SET PassWord = #{passWord} WHERE PlayerName = #{playerName}
+    </update>
 
     <select id="getAllPlayers" resultType="com.example.back.sys.entity.Player">
         SELECT * FROM player

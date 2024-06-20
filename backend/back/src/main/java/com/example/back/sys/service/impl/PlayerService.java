@@ -33,4 +33,9 @@ public class PlayerService implements IPlayerService {
     public boolean register(Player player){
         return playerMapper.registerPlayer(player);
     }
+
+    @Override
+    public boolean renewPlayer(Player player){
+        return playerMapper.renewPlayer(player);
+    }
 }

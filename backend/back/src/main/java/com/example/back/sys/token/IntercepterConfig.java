@@ -26,6 +26,10 @@ public class IntercepterConfig implements WebMvcConfigurer {
         List<String> excludePath = new ArrayList<>();//List用来保存所有不需要拦截的路径
         excludePath.add("/player/register"); //注册
         excludePath.add("/player/login"); //登录
+        excludePath.add("/player/"); //获取所有用户
+        excludePath.add("/player/getPlayerInfo"); //获取单个用户
+        excludePath.add("/player/reset-password"); //修改用户密码
+        excludePath.add("/item/getItemInfo");
 
         //在登陆之后的网页中已经携带token，所以只需要放行登陆注册接口，
         //若放行其他接口，那么就相当于不需要登陆就可进行接口的使用

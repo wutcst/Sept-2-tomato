@@ -13,4 +13,6 @@ public interface PlayerMapper {
     List<Player> judgeExist(Player player);
 
     boolean registerPlayer(Player player);
+
+    boolean renewPlayer(Player player);
 }

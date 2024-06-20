@@ -52,4 +52,12 @@ public class PlayerController {
         if(iPlayerService.register(player)) return Result.success("注册成功");
         return Result.fail("服务器异常，注册失败");
     }
+
+    @PostMapping("/reset-password")
+    public Result resetPassword(@RequestBody Player player)
+    {
+        if(iPlayerService.findByPlayerName(player.getPlayerName())== null) return Result.fail("不存在该用户");
+        if(iPlayerService.renewPlayer(player)) return Result.success("修改成功");
+        return Result.fail("服务器异常，修改失败");
+    }
 }
