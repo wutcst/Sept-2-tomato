@@ -39,40 +39,34 @@ export default {
         1: {
           name: '入口',
           backgroundImage: zooGate,
-          items: [
-            { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' },
-          ],
+          items: [],
         },
         2: {
           name: '猴子园区',
           backgroundImage: monkeyZone,
-          items: [
-            { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
-            { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
-          ],
+          items: [],
         },
-         3: {
+        3: {
           name: '狮子园区',
           backgroundImage: lionZone,
-          items: [
-            { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
-          ],
+          items: [],
         },
         4: {
           name: '大象园区',
           backgroundImage: elephantZone,
-          items: [
-            { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
-          ],
+          items: [],
         },
         5: {
           name: '出口',
           backgroundImage: zooExport,
-          items: [
-          ],
+          items: [],
         },
-        // 其他位置的配置
       },
+      itemMap: {
+        1: { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
+        2: { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
+        3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' }
+      }
     };
   },
   computed: {
@@ -90,6 +84,18 @@ export default {
   },
   methods: {
     updateLocation(roomId) {
+      // 这里是从 API 获取物品类别号的示例代码，你需要根据你的 API 进行调整
+      fetch(`/api/getItemsByRoomId?roomId=${roomId}`)
+        .then(response => response.json())
+        .then(data => {
+          const items = data.map(itemId => this.itemMap[itemId]);
+          this.$set(this.locationMap[roomId], 'items', items);
+        })
+        .catch(error => {
+          console.error('Error fetching items:', error);
+        });
+
+      // 更新背景图片等信息
       this.currentLocation = this.locationMap[roomId] || this.locationMap[1];
     },
     getItemImage(item) {
