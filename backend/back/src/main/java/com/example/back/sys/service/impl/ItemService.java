@@ -18,9 +18,24 @@ public class ItemService {
 
     public boolean takeItem(Player player, Item item) {
         try {
-            itemMapper.renewMap(player.getCurrentRoomID(),item.getItemID());
+            itemMapper.renewMap_delete(player.getCurrentRoomID(),item.getItemID());
             itemMapper.renewPlayer(player,item);
-            itemMapper.renewPlayerItem(player,item);
+            itemMapper.renewPlayerItem_add(player,item);
+        }catch(Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkItem(long playerID, Integer itemID) {
+        return itemMapper.check(playerID,itemID)!=null;
+    }
+
+    public boolean dropItem(Player player, Item item) {
+        try {
+            itemMapper.renewMap_add(player.getCurrentRoomID(),item.getItemID());
+            itemMapper.renewPlayer(player,item);
+            itemMapper.renewPlayerItem_delete(player,item);
         }catch(Exception e){
             return false;
         }

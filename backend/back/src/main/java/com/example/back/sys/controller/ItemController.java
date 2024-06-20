@@ -39,6 +39,7 @@ public class ItemController {
         //拿不下
         if(player.getCurrentWeight()+item.getWeight()>player.getMaxCarryWeight())
             return Result.fail("你拿不下更多东西了");
+
         player.setCurrentWeight(item.getWeight()+player.getCurrentWeight());
         if(!itemService.takeItem(player,item)) return Result.fail("服务器原因，拿取失败");
         return Result.success(player);
@@ -47,16 +48,19 @@ public class ItemController {
     @PostMapping("/drop")
     public Result dropItemById(Integer itemID,String playerName)
     {
-//        Player player = playerService.findByPlayerName(playerName);
-//        Item item = itemService.getItemById(itemID);
-//
-//        //id传错了的情况
-//        if(player==null) return Result.fail("未找到该用户！");
-//        if(item==null) return Result.fail("未找到该物品！");
-//
-//        //玩家没有这个物品
-//        if(!itemService.checkItem(player.getPlayerID(),itemID)) return Result.fail("玩家受伤没有该物品");
-        return Result.success();
+        Player player = playerService.findByPlayerName(playerName);
+        Item item = itemService.getItemById(itemID);
+
+        //id传错了的情况
+        if(player==null) return Result.fail("未找到该用户！");
+        if(item==null) return Result.fail("未找到该物品！");
+
+        //玩家没有这个物品
+        if(!itemService.checkItem(player.getPlayerID(),itemID)) return Result.fail("玩家没有该物品");
+
+        player.setCurrentWeight(item.getWeight()-player.getCurrentWeight());
+        if(!itemService.dropItem(player,item)) return Result.fail("服务器原因，丢弃失败");
+        return Result.success(player);
     }
 
 }
