@@ -1,5 +1,6 @@
 package com.example.back.sys.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.example.back.sys.service.IPlayerService;
 import com.example.back.sys.entity.Player;
 import com.example.back.sys.Result;
@@ -7,6 +8,7 @@ import com.example.back.sys.token.TokenGenerate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +27,8 @@ public class PlayerController {
         return Result.success(players);
     }
 
-    @PostMapping("/getPlayerInfo")
-    public Result getPlayerInfo(@RequestBody String playerName)
+    @GetMapping("/getPlayerInfo")
+    public Result getPlayerInfo(@RequestParam("playerName") String playerName)
     {
         Player player = iPlayerService.findByPlayerName(playerName);
         if(player == null) return Result.fail("找不到该用户");
@@ -41,7 +43,7 @@ public class PlayerController {
             List<String> l = new ArrayList<>();
             l.add(token);
             l.add(player.getPlayerName());
-            return Result.success(l);
+            return Result.success(l,"登录成功");
         }
         return Result.fail("用户名或密码输入错误");
     }

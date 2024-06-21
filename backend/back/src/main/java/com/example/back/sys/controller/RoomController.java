@@ -1,6 +1,8 @@
 package com.example.back.sys.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.example.back.sys.Result;
+import com.example.back.sys.entity.Item;
 import com.example.back.sys.entity.Player;
 import com.example.back.sys.entity.Room;
 import com.example.back.sys.service.impl.PlayerService;
@@ -8,16 +10,16 @@ import com.example.back.sys.service.impl.RoomService;
 import com.example.back.sys.token.IntercepterConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
-@Controller
+@CrossOrigin
 @RestController
 @RequestMapping("/room")
 public class RoomController {
@@ -27,24 +29,31 @@ public class RoomController {
     @Autowired
     private PlayerService playerService;
 
-    @PostMapping("/go")
-    public Result go(String playerName,Integer direction){
-
+    private Result move(String playerName, Integer direction) {
         Player player = playerService.findByPlayerName(playerName);
         Room curRoom = roomService.findRoomByRoomId(player.getCurrentRoomID());
 
         Integer nextRoomID;
 
-        switch (direction){
-            case 0: nextRoomID = curRoom.getEastRoomID(); break;
-            case 1: nextRoomID = curRoom.getSouthRoomID(); break;
-            case 2: nextRoomID = curRoom.getWestRoomID(); break;
-            case 3: nextRoomID = curRoom.getNorthRoomID(); break;
-            default: return Result.fail("不存在该方向！");
+        switch (direction) {
+            case 0:
+                nextRoomID = curRoom.getEastRoomID();
+                break;
+            case 1:
+                nextRoomID = curRoom.getSouthRoomID();
+                break;
+            case 2:
+                nextRoomID = curRoom.getWestRoomID();
+                break;
+            case 3:
+                nextRoomID = curRoom.getNorthRoomID();
+                break;
+            default:
+                return Result.fail("不存在该方向！");
         }
 
         Room nextRoom = roomService.findRoomByRoomId(nextRoomID);
-        if(nextRoom==null) return Result.fail("该方向上无房间");
+        if (nextRoom == null) return Result.fail("该方向上无房间");
         player.setCurrentRoomID(nextRoomID);
 
         roomService.updatePlayer(player);
@@ -52,29 +61,31 @@ public class RoomController {
         return Result.success(nextRoom);
     }
 
-    @PostMapping("/back")
-    public Result back(String playerName,Integer direction){
-        Player player = playerService.findByPlayerName(playerName);
-        Room curRoom = roomService.findRoomByRoomId(player.getCurrentRoomID());
+    @PostMapping("/go")
+    public Result go(@RequestBody Map<String, Object> request) {
+        String playerName = (String) request.get("playerName");
+        int direction = (int) request.get("direction");
 
-        Integer originRoomID;
-
-        switch (direction){
-            case 0: originRoomID = curRoom.getEastRoomID(); break;
-            case 1: originRoomID = curRoom.getSouthRoomID(); break;
-            case 2: originRoomID = curRoom.getWestRoomID(); break;
-            case 3: originRoomID = curRoom.getNorthRoomID(); break;
-            default: return Result.fail("不存在该方向！");
-        }
-
-        Room originRoom = roomService.findRoomByRoomId(originRoomID);
-        if(originRoom==null) return Result.fail("该方向上无房间");
-        player.setCurrentRoomID(originRoomID);
-
-        roomService.updatePlayer(player);
-
-        return Result.success(originRoom);
-
+        return move(playerName, direction);
     }
+
+    @PostMapping("/back")
+    public Result back(@RequestBody Map<String, Object> request) {
+        String playerName = (String) request.get("playerName");
+        int direction = (int) request.get("direction");
+
+        return move(playerName, direction);
+    }
+
+    @GetMapping("/check")
+    public Result getItemsInRoom(@RequestParam("RoomID") Integer roomID){
+        Room curRoom = roomService.findRoomByRoomId(roomID);
+        if(curRoom==null) return Result.fail("不存在该房间");
+
+        List<Item> items =  roomService.checkItemsInRoom(roomID);
+        System.out.println(items);
+        return Result.success(items);
+    }
+
 
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.back.sys.mapper.PlayerMapper">
     <insert id="registerPlayer">
-        INSERT INTO player(PlayerName,MaxCarryWeight,PassWord) VALUES (#{playerName},100,#{passWord})
+        INSERT INTO player(PlayerName,CurrentRoomID,CurrentWeight,MaxCarryWeight,PassWord) VALUES (#{playerName},1,0,100,#{passWord})
     </insert>
     <update id="renewPlayer">
         UPDATE player SET PassWord = #{passWord} WHERE PlayerName = #{playerName}

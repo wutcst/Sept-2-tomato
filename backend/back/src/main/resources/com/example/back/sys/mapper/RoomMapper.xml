@@ -8,4 +8,8 @@
     <select id="findRoomByRoomId" resultType="com.example.back.sys.entity.Room">
         SELECT * FROM room WHERE RoomID = #{RoomID}
     </select>
+    <select id="checkItemsInRoom" resultType="java.lang.Object">
+        SELECT ItemID FROM roomitems WHERE RoomID = #{RoomID}
+    </select>
+
 </mapper>

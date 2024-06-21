@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class TokenGenerate {
 
-    private static final Integer EXPIRE_TIME= 15*60*1000;
+    private static final Integer EXPIRE_TIME= 120*60*1000;
     private static final String TOKEN_SECRET="tokenqkj";  //密钥盐
     public String generateToken(String username){
         String token = null;

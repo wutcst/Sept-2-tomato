@@ -8,6 +8,8 @@ import com.example.back.sys.service.impl.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/item")
@@ -20,15 +22,14 @@ public class ItemController {
     private PlayerService playerService;
 
     @GetMapping("/getItemInfo")
-    public Result getItemInfoById(@RequestBody Integer itemID){
+    public Result getItemInfoById(@RequestParam("itemID") Integer itemID){
         Item item = itemService.getItemById(itemID);
         if(item==null) return Result.fail("未找到该物品！");
         return Result.success(item);
     }
 
     @PostMapping("/take")
-    public Result takeItemById(Integer itemID,String playerName)
-    {
+    public Result takeItemById(@RequestParam("itemID") Integer itemID, @RequestParam("playerName") String playerName) {
         Player player = playerService.findByPlayerName(playerName);
         Item item = itemService.getItemById(itemID);
 
@@ -46,8 +47,10 @@ public class ItemController {
     }
 
     @PostMapping("/drop")
-    public Result dropItemById(Integer itemID,String playerName)
+    public Result dropItemById(@RequestBody Map<String, Object> request)
     {
+        Integer itemID = (Integer) request.get("itemID");
+        String playerName = (String) request.get("playerName");
         Player player = playerService.findByPlayerName(playerName);
         Item item = itemService.getItemById(itemID);
 
@@ -62,5 +65,6 @@ public class ItemController {
         if(!itemService.dropItem(player,item)) return Result.fail("服务器原因，丢弃失败");
         return Result.success(player);
     }
+
 
 }
