@@ -34,7 +34,7 @@ public class IntercepterConfig implements WebMvcConfigurer {
 //        excludePath.add("/item/drop");
 //        excludePath.add("/room/go");
 //        excludePath.add("/room/back");
-//        excludePath.add("/room/check");
+        excludePath.add("/item/getItems");
 
         //在登陆之后的网页中已经携带token，所以只需要放行登陆注册接口，
         //若放行其他接口，那么就相当于不需要登陆就可进行接口的使用

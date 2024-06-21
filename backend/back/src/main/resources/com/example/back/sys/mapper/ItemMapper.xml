@@ -28,5 +28,8 @@
     <select id="check" resultType="java.lang.Object">
         SELECT * FROM playeritems WHERE ItemID = #{itemID} AND playerID = #{playerID}
     </select>
+    <select id="checkItemsInBag" resultType="java.lang.Object">
+        SELECT ItemID FROM playeritems WHERE PlayerID = #{playerID}
+    </select>
 
 </mapper>

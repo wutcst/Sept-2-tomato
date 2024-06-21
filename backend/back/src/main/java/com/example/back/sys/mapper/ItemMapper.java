@@ -4,6 +4,8 @@ import com.example.back.sys.entity.Item;
 import com.example.back.sys.entity.Player;
 import com.example.back.sys.entity.PlayerItems;
 
+import java.util.List;
+
 public interface ItemMapper {
 
     Item getItemById(Integer itemID);
@@ -20,4 +22,6 @@ public interface ItemMapper {
     void renewPlayerItem_delete(Player player, Item item);
 
     Object check(Integer playerID, Integer itemID);
+
+    List<Object> checkItemsInBag(Integer playerID);
 }

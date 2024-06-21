@@ -6,6 +6,8 @@ import com.example.back.sys.mapper.ItemMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ItemService {
@@ -40,5 +42,14 @@ public class ItemService {
             return false;
         }
         return true;
+    }
+
+    public List<Item> checkItemsInBag(Integer playerID) {
+        List<Object> l = itemMapper.checkItemsInBag(playerID);
+        List<Item> res = new ArrayList<>();
+        for(Object i :l ){
+            res.add(itemMapper.getItemById((Integer) i));
+        }
+        return res;
     }
 }
