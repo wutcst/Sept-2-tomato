@@ -30,6 +30,8 @@
       </el-main>
       <el-aside width="300px" class="sidebar-container">
         <app-sidebar></app-sidebar>
+        <img src="../../assets/images/Zoo.png" alt="">
+        <h2 class="location"><span>{{ locationMap[currentRoomId] }}</span></h2> <!-- 修改此行 -->
       </el-aside>
     </el-container>
   </el-container>
@@ -53,6 +55,13 @@ export default {
       dialogContent: '欢迎来到动物园！',
       displayedText: '',
       displayTimeout: null,
+      locationMap: {
+        1: '入口',
+        2: '猴子园区',
+        3: '狮子园区',
+        4: '大象园区',
+        5: '出口'
+      }
     };
   },
   methods: {
@@ -156,23 +165,6 @@ export default {
       };
       animate();
     },
-    // // 更新玩家房间Id的方法
-    // updatePlayerRoomId(nextRoomId) {
-    //   const playerId = this.playerInfo.playerID; // 从用户信息中获取 playerId
-    //   if (!playerId) {
-    //     console.error('playerId 未找到');
-    //     return;
-    //   }
-    //   axios.put(`/api/player/${playerId}/room`, { roomId: nextRoomId }) // 使用 playerId 访问后端 API
-    //     .then(response => {
-    //       console.log('玩家房间Id更新成功：', response.data);
-    //       // 可以根据后端的返回进行适当的处理
-    //     })
-    //     .catch(error => {
-    //       console.error('更新玩家房间Id失败：', error);
-    //       // 处理更新失败的情况
-    //     });
-    // },
     // 获取方向文本
     getDirectionText(direction) {
       const directionTexts = {
@@ -198,6 +190,11 @@ export default {
 </script>
 
 <style scoped>
+.location{
+  position: absolute;
+  right: 8.5%;
+  bottom: 23%;
+}
 .home-container {
   background-image: url("../../assets/images/background.png");
   background-size: 100%;

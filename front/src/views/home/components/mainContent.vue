@@ -1,7 +1,8 @@
 <template>
   <div class="main-content" :style="{ backgroundImage: `url(${currentLocation.backgroundImage})` }">
     <div class="map">
-      <h1>当前位置: <span>{{ currentLocation.name }}</span></h1>
+        <!-- <img class="location" src="../../../assets/images/Zoo.png" alt="">
+        <h2><span class="locationWord">{{ currentLocation.name }}</span></h2> -->
       <div v-if="currentLocation.items.length > 0" class="items">
         <div
           class="item"
@@ -16,8 +17,15 @@
             <p>名称: {{ item.name }}</p>
             <p>描述: {{ item.description }}</p>
             <p>重量: {{ item.weight }}</p>
-            <p>是否魔法物品: {{ item.isMagic ? '是' : '否' }}</p>
+            <p>物品类型：
+              {{ 
+                item.isMagic === 1 ? '魔法物品' :
+                item.isMagic === 2 ? '永久物品' :
+                '一次性物品'
+              }}
+            </p>
             <button @click.stop="confirmTakeItem(index)">拿取</button>
+            <button>投喂</button>
           </div>
         </div>
       </div>
@@ -32,6 +40,7 @@ import axios from 'axios';
 import mapImage from '../../../assets/images/map.jpg';
 import bananaImage from '../../../assets/images/banana.jpg';
 import cookieImage from '../../../assets/images/cookie.jpg';
+import meatImage from '../../../assets/images/meat.jpg';
 import zooGate from '../../../assets/images/zooGate.jpg';
 import monkeyZone from '../../../assets/images/monkeyZone.jpg';
 import lionZone from '../../../assets/images/lionZone.jpg';
@@ -77,7 +86,8 @@ export default {
       itemMap: {
         1: { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
         2: { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
-        3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' }
+        3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' },
+        4: { id: 4, name: '生肉', imageId: meatImage, color: '#ffcc99', borderColor: '#cc9966' }
       },
       tooltipIndex: null,
       takingItem: false
@@ -120,7 +130,7 @@ export default {
               id: item.itemID,
               name: item.itemName,
               description: item.description,
-              isMagic: item.isMagic === 1,
+              isMagic: item.isMagic,
               weight: item.weight,
               imageId: this.itemMap[item.itemID].imageId  // 获取物品对应的图片
             };

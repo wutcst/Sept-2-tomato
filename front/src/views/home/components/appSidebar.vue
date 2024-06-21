@@ -17,8 +17,15 @@
           <p>名称: {{ item.itemName }}</p>
           <p>描述: {{ item.description }}</p>
           <p>重量: {{ item.weight }}</p>
-          <p>是否魔法物品: {{ item.isMagic ? '是' : '否' }}</p>
+          <p>类型：
+              {{ 
+                item.isMagic === 1 ? '魔法物品' :
+                item.isMagic === 2 ? '永久物品' :
+                '一次性物品'
+              }}
+          </p>
           <button @click.stop="dropItem(index)">放下</button>
+          <button @click.stop="useItem(index)">使用</button>
         </div>
       </div>
       <div class="item empty" v-for="n in emptySlots" :key="'empty-' + n"></div>
@@ -31,6 +38,7 @@ import axios from 'axios';
 import mapImage from '../../../assets/images/map.jpg';
 import bananaImage from '../../../assets/images/banana.jpg';
 import cookieImage from '../../../assets/images/cookie.jpg';
+import meatImage from '../../../assets/images/meat.jpg';
 
 export default {
   name: 'AppSidebar',
@@ -43,6 +51,7 @@ export default {
         地图: { itemName: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
         香蕉: { itemName: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
         魔法饼干: { itemName: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' },
+        生肉: { itemName: '生肉', imageId: meatImage, color: '#ffcc99', borderColor: '#cc9966' },
       },
       maxDisplayItems: 9, // 每页最多显示的物品数量
       tooltipIndex: null,
@@ -64,15 +73,14 @@ export default {
     }
   },
   created() {
-  this.listenTakeItem(); // 组件创建时监听放下物品事件
+    this.listenTakeItem(); // 组件创建时监听拿取物品事件
   },
   methods: {
-    // 监听放下物品事件
     listenTakeItem() {
-    this.$root.$on('take-item', () => {
-          this.fetchPlayerInfo();
-          this.fetchInventoryItems();
-    });
+      this.$root.$on('take-item', () => {
+        this.fetchPlayerInfo();
+        this.fetchInventoryItems();
+      });
     },
     showTooltip(index) {
       this.tooltipIndex = index;
@@ -92,8 +100,8 @@ export default {
         .then(response => {
           if (response.data.code === 200) {
             alert(`成功放下物品：${item.itemName}`);
-            this.inventory.splice(index, 1);
-            this.usedWeight -= item.weight;
+            this.fetchPlayerInfo(); // 刷新玩家信息
+            this.fetchInventoryItems(); // 刷新物品列表
             this.$root.$emit('drop-item'); // 通知主组件放下物品
           } else {
             console.error('放下物品失败:', response.data.message);
@@ -105,6 +113,24 @@ export default {
         .finally(() => {
           this.confirmingDrop = false;
           this.itemToDropIndex = null;
+        });
+    },
+    useItem(index) {
+      const item = this.inventory[index];
+      const token = localStorage.getItem('token');
+      const playerName = localStorage.getItem('playerName');
+      axios.post('http://10.78.250.34:8081/item/use', { itemID: item.itemID, playerName: playerName }, { headers: { 'token': token } })
+        .then(response => {
+          if (response.data.code === 200) {
+            alert(response.data.message);
+            this.fetchPlayerInfo(); // 刷新玩家信息
+            this.fetchInventoryItems(); // 刷新物品列表
+          } else {
+            console.error('使用物品失败:', response.data.message);
+          }
+        })
+        .catch(error => {
+          console.error('使用物品出错:', error);
         });
     },
     fetchPlayerInfo() {
