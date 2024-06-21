@@ -2,21 +2,25 @@
   <div class="main-content" :style="{ backgroundImage: `url(${currentLocation.backgroundImage})` }">
     <div class="map">
       <h1>当前位置: <span>{{ currentLocation.name }}</span></h1>
-      <div class="items">
+      <div v-if="currentLocation.items.length > 0" class="items">
         <div
           class="item"
           v-for="(item, index) in currentLocation.items"
-          :key="index"
+          :key="item.id"
           @click="takeItem(index)"
         >
-          <img :src="getItemImage(item)" :alt="item.name" />
+          <img :src="item.imageId" :alt="item.name" />
         </div>
+      </div>
+      <div v-else>
+        <p>当前位置没有可获取的物品。</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import mapImage from '../../../assets/images/map.jpg';
 import bananaImage from '../../../assets/images/banana.jpg';
 import cookieImage from '../../../assets/images/cookie.jpg';
@@ -66,6 +70,7 @@ export default {
         1: { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
         2: { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
         3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' }
+        // 可以根据实际需要添加更多物品类型
       }
     };
   },
@@ -79,33 +84,26 @@ export default {
       handler(newVal) {
         this.updateLocation(newVal);
       },
-      immediate: true // 在组件创建时立即触发一次侦听器
+      immediate: true
     }
   },
   methods: {
     updateLocation(roomId) {
-      // 这里是从 API 获取物品类别号的示例代码，你需要根据你的 API 进行调整
-      fetch(`/api/getItemsByRoomId?roomId=${roomId}`)
-        .then(response => response.json())
-        .then(data => {
-          const items = data.map(itemId => this.itemMap[itemId]);
+      axios.get(`/api/getItemsByRoomId?roomId=${roomId}`)
+        .then(response => {
+          const itemIds = response.data;
+          const items = itemIds.map(itemId => this.itemMap[itemId]);
           this.$set(this.locationMap[roomId], 'items', items);
         })
         .catch(error => {
           console.error('Error fetching items:', error);
         });
-
-      // 更新背景图片等信息
-      this.currentLocation = this.locationMap[roomId] || this.locationMap[1];
-    },
-    getItemImage(item) {
-      return item.imageId;
     },
     takeItem(index) {
       const item = this.currentLocation.items.splice(index, 1)[0];
       alert(`你拿到了${item.name}`);
-    },
-  },
+    }
+  }
 };
 </script>
 

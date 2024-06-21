@@ -48,82 +48,102 @@ export default {
   },
   data() {
     return {
-      areaMap: {
-        '入口': { roomId: 1, north: '猴子园区', east: '狮子园区'},
-        '猴子园区': { roomId: 2, south: '入口',east:'大象园区' },
-        '狮子园区': { roomId: 3, west: '入口'},
-        '大象园区': { roomId: 4, south:'出口',west: '猴子园区' },
-        '出口': { roomId: 5, north: '大象园区', west: '狮子园区'},
-      },
-      directMap:{
-        stay:{id:0,text:'停留'},
-        north:{id:1,text:'北方向'},
-        south:{id:2,text:'南方向'},
-        east:{id:3,text:'东方向'},
-        west:{id:4,text:'西方向'},
-      },
-      currentLocation: '入口',
+      playerInfo: null,
       currentRoomId: 1, // 初始化为入口的 roomId
       dialogContent: '欢迎来到动物园！',
       displayedText: '',
-      displayTimeout: null
+      displayTimeout: null,
     };
   },
   methods: {
-    // 获取存储在 localStorage 中的 playerId
-    getPlayerId() {
-      return localStorage.getItem('playerId');
+    // 获取存储在 localStorage 中的 playerName
+    getPlayerName() {
+      return localStorage.getItem('playerName');
     },
-    async fetchPlayerRoomId(playerId) {
-      try {
-        // 发送 GET 请求获取当前玩家的 roomId
-        const response = await axios.get(`/api/player/${playerId}/currentRoomId`);
-        const roomId = response.data.roomId; // 假设后端返回的数据结构是 { roomId: 1 } 这样的格式
-        this.currentLocation = this.getAreaNameByRoomId(roomId); // 根据 roomId 更新当前位置
-        this.currentRoomId = roomId; // 更新 currentRoomId
-      } catch (error) {
-        console.error('Failed to fetch player roomId:', error);
-        // 处理错误情况
+    // 获取存储在 localStorage 中的 token
+    getPlayToken() {
+      return localStorage.getItem('token');
+    },
+    // 获取用户信息
+    async fetchUserInfo() {
+      const playerName = this.getPlayerName();
+      const token = this.getPlayToken();
+      if (!playerName || !token) {
+        console.error('本地存储中没有找到 playerName 或 token');
+        return;
       }
-    },
-    getAreaNameByRoomId(roomId) {
-      // 根据 roomId 查找对应的园区名称
-      for (const area in this.areaMap) {
-        if (this.areaMap[area].roomId === roomId) {
-          return area;
+    try {
+        const response = await axios.post(
+          'http://10.78.250.34:8081/player/getPlayerInfo',
+          { playerName: playerName},
+          { headers: { 'token': token } }
+        );
+        if (response.data.code === 200) {
+          this.playerInfo = response.data.data;
+          console.log('用户信息:', this.playerInfo);
+          this.currentRoomId = this.playerInfo.currentRoomID; // 设置当前房间ID
+        } else {
+          console.error('获取用户信息出错:', response.data.message);
         }
+      } catch (error) {
+        console.error('请求出错:', error);
       }
-      return '入口'; // 默认返回入口，或者根据实际情况处理
     },
-    move(direction) {
+    // 移动方法
+    async move(direction) {
       if (this.displayTimeout) {
         clearTimeout(this.displayTimeout);
         this.displayTimeout = null;
         this.displayedText = this.dialogContent;
       }
 
-      const currentArea = this.currentLocation;
-      const nextArea = this.areaMap[currentArea][direction];
-      
-      if (nextArea) {
-        // Valid move
-        this.currentLocation = nextArea;
-        const nextRoomId = this.areaMap[nextArea].roomId;  // 获取下一个园区的 roomId
-        this.currentRoomId = nextRoomId; // 更新 currentRoomId
-        this.dialogContent = `往${this.directMap[direction].text}走，你来到了${nextArea}（园区号：${nextRoomId}）。`;
+      const playerName = this.getPlayerName();
+      const token = this.getPlayToken();
+      const directionsMap = {
+        'east': 0,
+        'south': 1,
+        'west': 2,
+        'north': 3,  
+        'stay': 4,
+      };
+      const locationMap= {
+        1: '入口',
+        2: '猴子园区',
+        3: '狮子园区',
+        4: '大象园区',
+        5: '出口'
+      };
+      if (!playerName || !token) {
+        console.error('本地存储中没有找到 playerName 或 token');
+        return;
+      }
+      try {
+        const response = await axios.post('http://10.78.250.34:8081/room/go', {
+          playerName: playerName,
+          direction: directionsMap[direction],
+        }, {
+          headers: { 'token': token }
+        });
+        if (response.data.code === 200) {
+          const roomData = response.data.data;
+          this.currentRoomId = roomData.roomID;
+          this.dialogContent = `往${this.getDirectionText(direction)}走，你来到了${roomData.roomName}。 ${roomData.description}`;
 
-        // 向后端发送请求更新用户的房间Id
-        this.updatePlayerRoomId(nextRoomId);  // 使用 this.updatePlayerRoomId
-      } else if(this.directMap[direction].id===0)
-          this.dialogContent = `你现在在${this.currentLocation}`;
-      else {
-        // Invalid move (dead end)
-        this.dialogContent = `往${this.directMap[direction].text}走是死路，你现在在${this.currentLocation}`;
+          // 更新 currentRoomId 后端存储
+          this.updatePlayerRoomId(roomData.roomID);
+        } else {
+          if(directionsMap[direction]===4)
+            this.dialogContent = `你停留在原地，你现在在${locationMap[this.currentRoomId]}。`;
+          else this.dialogContent = `无法往${this.getDirectionText(direction)}走，你现在在${locationMap[this.currentRoomId]}。`;
+        }
+      } catch (error) {
+        console.error('请求出错:', error);
       }
 
       this.displayedText = '';
       this.startTextAnimation();
     },
+    // 文本动画
     startTextAnimation() {
       let index = 0;
       const animate = () => {
@@ -138,12 +158,12 @@ export default {
     },
     // 更新玩家房间Id的方法
     updatePlayerRoomId(nextRoomId) {
-      const playerId = this.getPlayerId();  // 获取 playerId
+      const playerId = this.playerInfo.playerID; // 从用户信息中获取 playerId
       if (!playerId) {
         console.error('playerId 未找到');
         return;
       }
-      axios.put(`/api/player/${playerId}/room`, { roomId: nextRoomId })  // 使用 playerId 访问后端 API
+      axios.put(`/api/player/${playerId}/room`, { roomId: nextRoomId }) // 使用 playerId 访问后端 API
         .then(response => {
           console.log('玩家房间Id更新成功：', response.data);
           // 可以根据后端的返回进行适当的处理
@@ -153,6 +173,19 @@ export default {
           // 处理更新失败的情况
         });
     },
+    // 获取方向文本
+    getDirectionText(direction) {
+      const directionTexts = {
+        'east': '东',
+        'south': '南',
+        'west': '西',
+        'north': '北',
+      };
+      return directionTexts[direction];
+    },
+  },
+  created() {
+    this.fetchUserInfo();
   },
   beforeDestroy() {
     // 组件销毁时清理定时器
@@ -165,7 +198,6 @@ export default {
 </script>
 
 <style scoped>
-
 .home-container {
   background-image: url("../../assets/images/background.png");
   background-size: 100%;
