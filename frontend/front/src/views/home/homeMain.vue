@@ -165,7 +165,7 @@ export default {
 </script>
 
 <style scoped>
-@import "https://unpkg.com/element-ui/lib/theme-chalk/index.css";
+
 .home-container {
   background-image: url("../../assets/images/background.png");
   background-size: 100%;

@@ -13,7 +13,6 @@
                             <div class="changeDisplay border2">
                                 <el-input placeholder="用户名" v-model="username"></el-input>
                                 <el-input type="password" placeholder="密码" v-model="password"></el-input>
-                                <el-input type="email" placeholder="电子邮箱" v-model="email"></el-input>
                             </div>
                             <div class="reRegist"></div>
                             <div class="clear"></div>
@@ -39,7 +38,6 @@
             return {
                 username: '',
                 password: '',
-                email: '',
             };
         },
         mounted() {
@@ -49,39 +47,27 @@
             document.body.classList.remove('loginBac');
         },
         methods: {
-            // 验证邮箱格式
-            validateEmail(email) {
-                const emailRegex = /\S+@\S+\.\S+/;
-                return emailRegex.test(email);
-            },
             register() {
-                if (!this.validateEmail(this.email)) {
-                    this.$message.error('请输入有效的邮箱地址！');
-                    return;
-                }
-
                 if (this.password.length < 5 || this.password.length > 8) {
                     this.$message.error('密码长度必须在5-8位之间！');
                     return;
                 }
-
                
                 // 发送注册请求到后端
-                axios.post('http://localhost:8080/register', {
+                axios.post('http://10.78.250.34:8081/player/register', {
                     playerName: this.username,
                     passWord: this.password,
-                    email: this.email,
                 })
                     .then(response => {
                         if (response.data.code === 200) {
-                            this.$message.success(response.data.msg);
+                            this.$message.success(response.data.message);
                             this.$router.push("/login-main");  
                         } else {
-                            this.$message.error(response.data.msg); // 显示失败消息
+                            this.$message.error(response.data.message); // 显示失败消息
                         }
                     })
                     .catch(error => {
-                        this.$message.error(error.response.data.msg);
+                        this.$message.error(error.response.data.message);
                     });
             },
         }

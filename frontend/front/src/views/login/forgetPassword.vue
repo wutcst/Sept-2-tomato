@@ -12,10 +12,7 @@
                         <form @submit.prevent="changePassword">
                             <div class="changeDisplay border2">
                                 <el-input placeholder="用户名" v-model="username"></el-input>
-                                <el-input type="email" placeholder="邮箱" v-model="email"></el-input>
-                            </div>
-                            <div class="changeDisplay border3">
-                                <el-input type="password" placeholder="新密码" v-model="newPassword"></el-input>
+                                 <el-input type="password" placeholder="新密码" v-model="newPassword"></el-input>
                                 <el-input type="password" placeholder="确认密码" v-model="confirmPassword"></el-input>
                             </div>
                             <div class="clear"></div>
@@ -37,7 +34,6 @@
         data() {
             return {
                 username: '',
-                email: '',
                 newPassword: '',
                 confirmPassword: ''
             };
@@ -51,7 +47,7 @@
         methods: {
             changePassword() {
                 // 验证用户名和密码不能为空
-                if (!this.username || !this.email || !this.newPassword || !this.confirmPassword) {
+                if (!this.username || !this.newPassword || !this.confirmPassword) {
                     this.$message.error('用户名和密码不能为空');
                     return;
                 }
@@ -65,22 +61,21 @@
                     // 发送修改密码请求等等
                     const data = {
                         playerName: this.username,
-                        email: this.email,
-                        newPassword: this.newPassword
+                        passWord: this.newPassword
                     };
                     // 使用axios或其他方式发送请求
-                    this.$axios.post('/reset-password', data)
+                    this.$axios.post('http://10.78.250.34:8081/player/reset-password', data)
                         .then(response => {
                             console.log(response.data);
                             if (response.data.code === 200) { // 根据后端返回的状态码判断请求是否成功
                                 this.$router.push("/login-main");
-                                this.$message.success(response.data.msg); // 显示成功消息
+                                this.$message.success(response.data.message); // 显示成功消息
                             } else {
-                                this.$message.error(response.data.msg); // 显示失败消息
+                                this.$message.error(response.data.message); // 显示失败消息
                             }
                         })
                         .catch(error => {
-                            this.$message.error(error.response.data.msg);
+                            this.$message.error(error.response.data.message);
                         });
                 } else {
                     this.$message.error('两次密码不一致');

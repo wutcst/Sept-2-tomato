@@ -50,8 +50,8 @@
         methods: {
             login() {
                 // 发送登录请求到后端
-                this.$axios.post('http://localhost:8080/login', {
-                    playName: this.username,
+                this.$axios.post('http://10.78.250.34:8081/player/login', {
+                    playerName: this.username,
                     passWord: this.password
                 })
                     .then(response => {
@@ -59,11 +59,12 @@
                         console.log(response.data);
                         if (response.data.code === 200) { // 根据后端返回的状态码判断请求是否成功
                             // 将用户的id存储到localStorage中
-                            localStorage.setItem('playerId', response.data.data);
+                            localStorage.setItem('token', response.data.data[0]);
+                            localStorage.setItem('playerName', response.data.data[1]);
                             this.$router.push("/home-main");
-                            this.$message.success(response.data.msg); // 显示成功消息
+                            this.$message.success(response.data.message); // 显示成功消息
                         } else {
-                            this.$message.error(response.data.msg); // 显示失败消息
+                            this.$message.error(response.data.message); // 显示失败消息
                         }
                     })
                     .catch(error => {
