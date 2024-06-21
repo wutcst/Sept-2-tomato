@@ -6,7 +6,7 @@
       <div
         class="item"
         v-for="(item, index) in displayedInventory"
-        :key="item.itemID"
+        :key="item.itemID + '-' + index"
         @mouseenter="showTooltip(index)"
         @mouseleave="hideTooltip"
         @click.stop="toggleDropConfirmation(index)"
@@ -63,7 +63,17 @@ export default {
       return Math.max(0, this.maxDisplayItems - this.displayedInventory.length);
     }
   },
+  created() {
+  this.listenTakeItem(); // 组件创建时监听放下物品事件
+  },
   methods: {
+    // 监听放下物品事件
+    listenTakeItem() {
+    this.$root.$on('take-item', () => {
+          this.fetchPlayerInfo();
+          this.fetchInventoryItems();
+    });
+    },
     showTooltip(index) {
       this.tooltipIndex = index;
     },
@@ -78,12 +88,13 @@ export default {
       const item = this.inventory[index];
       const token = localStorage.getItem('token');
       const playerName = localStorage.getItem('playerName');
-      axios.post('http://10.78.250.34:8081/item/drop', { itemID: item.itemID, playerName:playerName }, { headers: { 'token': token } })
+      axios.post('http://10.78.250.34:8081/item/drop', { itemID: item.itemID, playerName: playerName }, { headers: { 'token': token } })
         .then(response => {
           if (response.data.code === 200) {
             alert(`成功放下物品：${item.itemName}`);
             this.inventory.splice(index, 1);
             this.usedWeight -= item.weight;
+            this.$root.$emit('drop-item'); // 通知主组件放下物品
           } else {
             console.error('放下物品失败:', response.data.message);
           }

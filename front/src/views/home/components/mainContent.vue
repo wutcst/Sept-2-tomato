@@ -6,7 +6,7 @@
         <div
           class="item"
           v-for="(item, index) in currentLocation.items"
-          :key="item.id"
+          :key="item.id + '-' + index"
           @mouseenter="showTooltip(index)"
           @mouseleave="hideTooltip"
         >
@@ -96,7 +96,16 @@ export default {
       immediate: true
     }
   },
+  created() {
+  this.listenDropItem(); // 组件创建时监听放下物品事件
+  },
   methods: {
+    // 监听放下物品事件
+    listenDropItem() {
+    this.$root.$on('drop-item', () => {
+      this.updateLocation(this.currentRoomId); // 放下物品后更新当前位置的物品列表
+    });
+    },
     updateLocation(roomId) {
       const token = localStorage.getItem('token'); // 获取用户 token
       axios.post('http://10.78.250.34:8081/room/check', 
@@ -155,6 +164,7 @@ export default {
         if (responseData.code === 200) {
           alert(`你拿到了${item.name}`);
           this.currentLocation.items.splice(index, 1); // 更新前端物品列表
+          this.$root.$emit('take-item'); // 通知主组件拿走物品
         } else {
           console.error('拿取物品失败,你的负重剩余量不足:', responseData.message);
         }
