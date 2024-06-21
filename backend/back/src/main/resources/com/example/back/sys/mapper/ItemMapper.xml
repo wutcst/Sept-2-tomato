@@ -10,26 +10,26 @@
     </insert>
 
     <update id="renewPlayer">
-        UPDATE player SET currentWeight = #{player.currentWeight} WHERE playerID = #{player.playerID};
+        UPDATE player SET CurrentWeight = #{player.currentWeight},MaxCarryWeight =#{player.maxCarryWeight} WHERE playerID = #{player.playerID};
     </update>
 
     <delete id="renewMap_delete">
-        DELETE FROM roomitems WHERE RoomID = #{currentRoomID} AND ItemId = #{itemID} LIMIT 1;
+        DELETE FROM roomitems WHERE RoomID = #{currentRoomID} AND ItemID = #{itemID} LIMIT 1;
     </delete>
 
     <delete id="renewPlayerItem_delete">
-        DELETE FROM playeritems WHERE PlayerID = #{player.playerID} AND playerID = #{item.itemID} LIMIT 1;
+        DELETE FROM playeritems WHERE PlayerID = #{player.playerID} AND ItemID = #{item.itemID} LIMIT 1;
     </delete>
 
     <select id="getItemById" resultType="com.example.back.sys.entity.Item">
         SELECT * FROM item WHERE ItemID = #{itemID}
     </select>
 
-    <select id="check" resultType="java.lang.Object">
-        SELECT * FROM playeritems WHERE ItemID = #{itemID} AND playerID = #{playerID}
-    </select>
     <select id="checkItemsInBag" resultType="java.lang.Object">
         SELECT ItemID FROM playeritems WHERE PlayerID = #{playerID}
+    </select>
+    <select id="check" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM playeritems WHERE ItemID = #{itemID} AND playerID = #{playerID}
     </select>
 
 </mapper>

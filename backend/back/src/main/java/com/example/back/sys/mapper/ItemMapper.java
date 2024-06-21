@@ -21,7 +21,7 @@ public interface ItemMapper {
 
     void renewPlayerItem_delete(Player player, Item item);
 
-    Object check(Integer playerID, Integer itemID);
+    Integer check(Integer playerID, Integer itemID);
 
     List<Object> checkItemsInBag(Integer playerID);
 }

@@ -21,8 +21,8 @@ public class ItemService {
     public boolean takeItem(Player player, Item item) {
         try {
             itemMapper.renewMap_delete(player.getCurrentRoomID(),item.getItemID());
-            itemMapper.renewPlayer(player,item);
             itemMapper.renewPlayerItem_add(player,item);
+            itemMapper.renewPlayer(player,item);
         }catch(Exception e){
             return false;
         }
@@ -30,14 +30,14 @@ public class ItemService {
     }
 
     public boolean checkItem(Integer playerID, Integer itemID) {
-        return itemMapper.check(playerID,itemID)!=null;
+        return itemMapper.check(playerID,itemID)!=0;
     }
 
     public boolean dropItem(Player player, Item item) {
         try {
             itemMapper.renewMap_add(player.getCurrentRoomID(),item.getItemID());
-            itemMapper.renewPlayer(player,item);
             itemMapper.renewPlayerItem_delete(player,item);
+            itemMapper.renewPlayer(player,item);
         }catch(Exception e){
             return false;
         }
@@ -51,5 +51,22 @@ public class ItemService {
             res.add(itemMapper.getItemById((Integer) i));
         }
         return res;
+    }
+
+    public boolean eatItem(Player player, Item item) {
+        try {
+            player.setCurrentWeight(player.getCurrentWeight() - item.getWeight());
+            //魔法饼干
+            switch (item.getIsMagic()){
+                case 1:player.setMaxCarryWeight(player.getMaxCarryWeight()+10);break;
+                case 2:return false;
+            }
+            System.out.println(item.getIsMagic());
+            itemMapper.renewPlayerItem_delete(player,item);
+            itemMapper.renewPlayer(player,item);
+        }catch(Exception e){
+            return false;
+        }
+        return true;
     }
 }

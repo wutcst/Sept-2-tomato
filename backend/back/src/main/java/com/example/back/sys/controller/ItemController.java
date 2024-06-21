@@ -73,8 +73,9 @@ public class ItemController {
      */
     @PostMapping("/drop")
     public Result dropItemById(@RequestBody Map<String, Object> request) {
-        Integer itemID = (Integer) request.get("itemID");
         String playerName = (String) request.get("playerName");
+        Integer itemID = (Integer) request.get("itemID");
+
         Player player = playerService.findByPlayerName(playerName);
         Item item = itemService.getItemById(itemID);
 
@@ -85,11 +86,16 @@ public class ItemController {
         // 玩家没有这个物品
         if (!itemService.checkItem(player.getPlayerID(), itemID)) return Result.fail("玩家没有该物品");
 
-        player.setCurrentWeight(item.getWeight() - player.getCurrentWeight());
+        player.setCurrentWeight(player.getCurrentWeight()-item.getWeight());
         if (!itemService.dropItem(player, item)) return Result.fail("服务器原因，丢弃失败");
         return Result.success(player);
     }
 
+    /**
+     * 玩家根据姓名查询身上物品。
+     * @param request 包含playerName的请求体Map。
+     * @return 包含物品信息的 Result 对象。
+     */
     @PostMapping("/getItems")
     public Result checkItemsInBag(@RequestBody Map<String,Object> request){
         String playerName = (String) request.get("playerName");
@@ -100,6 +106,54 @@ public class ItemController {
 
         List<Item> res = itemService.checkItemsInBag(player.getPlayerID());
         return Result.success(res);
+
+    }
+
+    /**
+     * 玩家使用身上物品。
+     * @param request 包含ItemID和playerName的请求体Map。
+     * @return 包含返回的 Result 对象。
+     */
+    @PostMapping("/use")
+    public Result feedItems(@RequestBody Map<String,Object> request){
+        String playerName = (String) request.get("playerName");
+        Integer itemID = (Integer) request.get("itemID");
+
+        Player player = playerService.findByPlayerName(playerName);
+        Item item = itemService.getItemById(itemID);
+
+        // id传错了的情况
+        if (player == null) return Result.fail("未找到该用户！");
+        if (item == null) return Result.fail("未找到该物品！");
+
+        // 玩家没有这个物品
+        if (!itemService.checkItem(player.getPlayerID(), itemID)) return Result.fail("玩家没有该物品");
+
+        if(item.getIsMagic()==2) return Result.success("不能吃掉地图！");
+        if(!itemService.eatItem(player, item)) return Result.fail("服务器原因，食用失败");
+        return Result.success("食用成功，你吃掉了"+item.getItemName());
+    }
+
+    /**
+     * 玩家使用身上物品。
+     * @param request 包含ItemID和playerName的请求体Map。
+     * @return 包含返回的 Result 对象。
+     */
+    @PostMapping("/feed")
+    public Result giveItems(@RequestBody Map<String,Object> request){
+        String playerName = (String) request.get("playerName");
+        Integer itemID = (Integer) request.get("itemID");
+
+        Player player = playerService.findByPlayerName(playerName);
+        Item item = itemService.getItemById(itemID);
+
+        // id传错了的情况
+        if (player == null) return Result.fail("未找到该用户！");
+        if (item == null) return Result.fail("未找到该物品！");
+
+        // 玩家没有这个物品
+        if (!itemService.checkItem(player.getPlayerID(), itemID)) return Result.fail("玩家没有该物品");
+        
 
     }
 
