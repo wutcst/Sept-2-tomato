@@ -129,8 +129,8 @@ export default {
           this.currentRoomId = roomData.roomID;
           this.dialogContent = `往${this.getDirectionText(direction)}走，你来到了${roomData.roomName}。 ${roomData.description}`;
 
-          // 更新 currentRoomId 后端存储
-          this.updatePlayerRoomId(roomData.roomID);
+          // // 更新 currentRoomId 后端存储
+          // this.updatePlayerRoomId(roomData.roomID);
         } else {
           if(directionsMap[direction]===4)
             this.dialogContent = `你停留在原地，你现在在${locationMap[this.currentRoomId]}。`;
@@ -156,23 +156,23 @@ export default {
       };
       animate();
     },
-    // 更新玩家房间Id的方法
-    updatePlayerRoomId(nextRoomId) {
-      const playerId = this.playerInfo.playerID; // 从用户信息中获取 playerId
-      if (!playerId) {
-        console.error('playerId 未找到');
-        return;
-      }
-      axios.put(`/api/player/${playerId}/room`, { roomId: nextRoomId }) // 使用 playerId 访问后端 API
-        .then(response => {
-          console.log('玩家房间Id更新成功：', response.data);
-          // 可以根据后端的返回进行适当的处理
-        })
-        .catch(error => {
-          console.error('更新玩家房间Id失败：', error);
-          // 处理更新失败的情况
-        });
-    },
+    // // 更新玩家房间Id的方法
+    // updatePlayerRoomId(nextRoomId) {
+    //   const playerId = this.playerInfo.playerID; // 从用户信息中获取 playerId
+    //   if (!playerId) {
+    //     console.error('playerId 未找到');
+    //     return;
+    //   }
+    //   axios.put(`/api/player/${playerId}/room`, { roomId: nextRoomId }) // 使用 playerId 访问后端 API
+    //     .then(response => {
+    //       console.log('玩家房间Id更新成功：', response.data);
+    //       // 可以根据后端的返回进行适当的处理
+    //     })
+    //     .catch(error => {
+    //       console.error('更新玩家房间Id失败：', error);
+    //       // 处理更新失败的情况
+    //     });
+    // },
     // 获取方向文本
     getDirectionText(direction) {
       const directionTexts = {

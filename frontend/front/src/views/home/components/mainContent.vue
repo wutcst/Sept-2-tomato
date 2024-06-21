@@ -7,9 +7,18 @@
           class="item"
           v-for="(item, index) in currentLocation.items"
           :key="item.id"
-          @click="takeItem(index)"
+          @mouseenter="showTooltip(index)"
+          @mouseleave="hideTooltip"
         >
           <img :src="item.imageId" :alt="item.name" />
+          <p>{{ item.name }}</p>
+          <div v-if="tooltipIndex === index && !takingItem" class="tooltip">
+            <p>名称: {{ item.name }}</p>
+            <p>描述: {{ item.description }}</p>
+            <p>重量: {{ item.weight }}</p>
+            <p>是否魔法物品: {{ item.isMagic ? '是' : '否' }}</p>
+          </div>
+          <button @click.stop="confirmTakeItem(index)">拿取</button>
         </div>
       </div>
       <div v-else>
@@ -18,7 +27,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import axios from 'axios';
 import mapImage from '../../../assets/images/map.jpg';
@@ -70,8 +78,9 @@ export default {
         1: { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
         2: { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
         3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' }
-        // 可以根据实际需要添加更多物品类型
-      }
+      },
+      tooltipIndex: null,
+      takingItem: false
     };
   },
   computed: {
@@ -89,15 +98,46 @@ export default {
   },
   methods: {
     updateLocation(roomId) {
-      axios.get(`/api/getItemsByRoomId?roomId=${roomId}`)
-        .then(response => {
-          const itemIds = response.data;
-          const items = itemIds.map(itemId => this.itemMap[itemId]);
+      const token = localStorage.getItem('token'); // 获取用户 token
+      axios.post('http://10.78.250.34:8081/room/check', 
+        { roomID: roomId },
+        { headers: { 'token': token } }
+      )
+      .then(response => {
+        const responseData = response.data;
+        if (responseData.code === 200 && responseData.data) {
+          const items = responseData.data.map(item => {
+            return {
+              id: item.itemID,
+              name: item.itemName,
+              description: item.description,
+              isMagic: item.isMagic === 1,
+              weight: item.weight,
+              imageId: this.itemMap[item.itemID].imageId  // 获取物品对应的图片
+            };
+          });
           this.$set(this.locationMap[roomId], 'items', items);
-        })
-        .catch(error => {
-          console.error('Error fetching items:', error);
-        });
+        } else {
+          console.error('获取物品列表失败:', responseData.message);
+        }
+      })
+      .catch(error => {
+        console.error('获取物品列表出错:', error);
+      });
+    },
+    showTooltip(index) {
+      this.tooltipIndex = index;
+    },
+    hideTooltip() {
+      this.tooltipIndex = null;
+    },
+    confirmTakeItem(index) {
+      this.takingItem = true;
+      const item = this.currentLocation.items[index];
+      if (confirm(`你确定要拿取 ${item.name} 吗?`)) {
+        this.takeItem(index);
+      }
+      this.takingItem = false;
     },
     takeItem(index) {
       const item = this.currentLocation.items.splice(index, 1)[0];
@@ -131,6 +171,8 @@ export default {
   margin: 5px;
   padding: 5px;
   cursor: pointer;
+  text-align: center; /* 居中显示物品名称 */
+  position: relative; /* 为了定位 tooltip */
 }
 .item img {
   width: 80px;
@@ -142,5 +184,31 @@ export default {
 }
 .item:hover img {
   transform: scale(1.1);
+}
+.tooltip {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  width: 200px;
+  text-align: left;
+}
+button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: #0056b3;
 }
 </style>
