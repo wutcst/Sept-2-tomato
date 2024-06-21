@@ -215,7 +215,7 @@ export default {
   padding: 10px;
   border-radius: 5px;
   z-index: 1000;
-  width: 200px;
+  width: 150px;
   text-align: left;
 }
 button {
