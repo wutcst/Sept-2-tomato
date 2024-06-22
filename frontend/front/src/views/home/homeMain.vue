@@ -18,9 +18,11 @@
                                 <el-button class="north" @click="move('north')">北</el-button>
                             </div>
                             <div class="row">
+                                <el-button class="back" @click="move('back')">返回</el-button>
                                 <el-button class="west" @click="move('west')">西</el-button>
                                 <el-button class="stay" @click="move('stay')">S</el-button>
                                 <el-button class="east" @click="move('east')">东</el-button>
+                                <el-button class="back" @click="move('back')">返回</el-button>
                             </div>
                             <div class="row">
                                 <el-button class="south" @click="move('south')">南</el-button>
@@ -65,7 +67,9 @@
                     4: '大象园区',
                     5: '熊猫园区',
                     6: '出口'
-                }
+                },
+                visitedDirection: [], // 记录访问的方向
+                backDirection: '',
             };
         },
         created() {
@@ -152,6 +156,7 @@
             },
             // 移动方法
             async move(direction) {
+                // 清除显示文本的定时器
                 if (this.displayTimeout) {
                     clearTimeout(this.displayTimeout);
                     this.displayTimeout = null;
@@ -166,6 +171,13 @@
                     'west': 2,
                     'north': 3,
                     'stay': 4,
+                    'back': 5 // 添加返回操作
+                };
+                const directionsBack = {
+                    'west': 'east',
+                    'north': 'south',
+                    'east': 'west',
+                    'south': 'north',
                 };
                 const locationMap = {
                     1: '入口',
@@ -175,28 +187,50 @@
                     5: '熊猫园区',
                     6: '出口'
                 };
+
                 if (!playerName || !token) {
                     console.error('本地存储中没有找到 playerName 或 token');
                     return;
                 }
-                try {
-                    const response = await axios.post('http://10.78.250.34:8081/room/go', {
-                        playerName: playerName,
-                        direction: directionsMap[direction],
-                    }, {
-                        headers: { 'token': token }
-                    });
-                    if (response.data.code === 200) {
-                        const roomData = response.data.data;
-                        this.currentRoomId = roomData.roomID;
-                        this.dialogContent = `往${this.getDirectionText(direction)}走，你来到了${roomData.roomName}。 ${roomData.description}`;
 
-                        // // 更新 currentRoomId 后端存储
-                        // this.updatePlayerRoomId(roomData.roomID);
+                try {
+                    if (direction === 'back') { // 处理返回操作
+                        if (this.visitedDirection.length > 0) {
+                            const previousDirection = this.visitedDirection.pop(); // 获取上一个前进方向
+                            this.backDirection = directionsBack[previousDirection];
+                            const response = await axios.post('http://10.78.250.34:8081/room/go', {
+                                playerName: playerName,
+                                direction: directionsMap[this.backDirection],
+                            }, {
+                                headers: { 'token': token }
+                            });
+
+                            if (response.data.code === 200) {
+                                const roomData = response.data.data;
+                                this.currentRoomId = roomData.roomID;
+                                this.dialogContent = `你回到了${roomData.roomName}。 ${roomData.description}`;
+                            } else this.dialogContent = `无法往${this.getDirectionText(direction)}走，你现在在${locationMap[this.currentRoomId]}。`;
+                        } else {
+                            this.dialogContent = `无法返回,你已经到了最初的地方。`;
+                        }
                     } else {
-                        if (directionsMap[direction] === 4)
-                            this.dialogContent = `你停留在原地，你现在在${locationMap[this.currentRoomId]}。`;
-                        else this.dialogContent = `无法往${this.getDirectionText(direction)}走，你现在在${locationMap[this.currentRoomId]}。`;
+                        const response = await axios.post('http://10.78.250.34:8081/room/go', {
+                            playerName: playerName,
+                            direction: directionsMap[direction],
+                        }, {
+                            headers: { 'token': token }
+                        });
+
+                        if (response.data.code === 200) {
+                            const roomData = response.data.data;
+                            this.visitedDirection.push(direction);
+                            this.currentRoomId = roomData.roomID;
+                            this.dialogContent = `往${this.getDirectionText(direction)}走，你来到了${roomData.roomName}。 ${roomData.description}`;
+                        } else {
+                            if (directionsMap[direction] === 4)
+                                this.dialogContent = `你停留在原地，你现在在${locationMap[this.currentRoomId]}。`;
+                            else this.dialogContent = `无法往${this.getDirectionText(direction)}走，你现在在${locationMap[this.currentRoomId]}。`;
+                        }
                     }
                 } catch (error) {
                     console.error('请求出错:', error);
@@ -310,6 +344,7 @@
         font-size: 18px;
         padding: 10px 10px;
     }
+
 
     .east,
     .west {
