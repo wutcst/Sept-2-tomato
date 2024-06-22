@@ -24,8 +24,7 @@
                 '一次性物品'
               }}
             </p>
-            <button @click.stop="confirmTakeItem(index)">拿取</button>
-            <button>投喂</button>
+            <button @click.stop="takeItem(index)">拿取</button>
           </div>
         </div>
       </div>
@@ -41,10 +40,12 @@ import mapImage from '../../../assets/images/map.jpg';
 import bananaImage from '../../../assets/images/banana.jpg';
 import cookieImage from '../../../assets/images/cookie.jpg';
 import meatImage from '../../../assets/images/meat.jpg';
+import shitImage from '../../../assets/images/shit.png';
 import zooGate from '../../../assets/images/zooGate.jpg';
 import monkeyZone from '../../../assets/images/monkeyZone.jpg';
 import lionZone from '../../../assets/images/lionZone.jpg';
 import elephantZone from '../../../assets/images/elephantZone.jpg';
+import panadaZone from '../../../assets/images/panadaZone.jpg';
 import zooExport from '../../../assets/images/export.jpg';
 
 export default {
@@ -78,6 +79,11 @@ export default {
           items: [],
         },
         5: {
+          name: '熊猫园区',
+          backgroundImage: panadaZone,
+          items: [],
+        },
+        6: {
           name: '出口',
           backgroundImage: zooExport,
           items: [],
@@ -87,7 +93,8 @@ export default {
         1: { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
         2: { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
         3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' },
-        4: { id: 4, name: '生肉', imageId: meatImage, color: '#ffcc99', borderColor: '#cc9966' }
+        4: { id: 4, name: '生肉', imageId: meatImage, color: '#ffcc99', borderColor: '#cc9966' },
+        5: { id: 5, name: '大便', imageId: shitImage, color: '#ffcc99', borderColor: '#cc9966' }
       },
       tooltipIndex: null,
       takingItem: false
@@ -150,14 +157,14 @@ export default {
     hideTooltip() {
       this.tooltipIndex = null;
     },
-    confirmTakeItem(index) {
-      this.takingItem = true;
-      const item = this.currentLocation.items[index];
-      if (confirm(`你确定要拿取 ${item.name} 吗?`)) {
-        this.takeItem(index);
-      }
-      this.takingItem = false;
-    },
+    // confirmTakeItem(index) {
+    //   this.takingItem = true;
+    //   const item = this.currentLocation.items[index];
+    //   if (confirm(`你确定要拿取 ${item.name} 吗?`)) {
+    //     this.takeItem(index);
+    //   }
+    //   this.takingItem = false;
+    // },
     takeItem(index) {
       const item = this.currentLocation.items[index];
       const token = localStorage.getItem('token'); // 获取用户 token
@@ -172,7 +179,8 @@ export default {
       .then(response => {
         const responseData = response.data;
         if (responseData.code === 200) {
-          alert(`你拿到了${item.name}`);
+          // alert(`你拿到了${item.name}`);
+          localStorage.setItem('message', `你成功拿取${item.name}`);
           this.currentLocation.items.splice(index, 1); // 更新前端物品列表
           this.$root.$emit('take-item'); // 通知主组件拿走物品
         } else {

@@ -55,7 +55,7 @@ export default {
     return {
       playerInfo: null,
       currentRoomId: 1, // 初始化为入口的 roomId
-      dialogContent: '欢迎来到动物园！',
+      dialogContent: `欢迎进入《勇闯动物园》!${this.getPlayerName()}`,
       displayedText: '',
       displayTimeout: null,
       locationMap: {
@@ -67,7 +67,51 @@ export default {
       }
     };
   },
+  created() {
+    this.displayedText = '';
+    this.startTextAnimation();
+    this.fetchUserInfo();
+    this.listenFeedItem(); // 组件创建时监听投喂物品事件
+    this.listenUseItem(); // 组件创建时监听使用物品事件
+    this.listenTakeItem(); // 组件创建时监听拿走物品事件
+    this.listenDropItem();// 组件创建时监听放下物品事件
+  },
   methods: {
+    // 监听投喂物品事件
+    listenFeedItem() {
+    this.$root.$on('feed-item', () => {
+      this.dialogContent=this.getPlayMessage();
+      this.displayedText = '';
+      this.startTextAnimation();
+      this.fetchUserInfo();
+    });
+    },
+    // 监听使用物品事件
+    listenUseItem() {
+    this.$root.$on('use-item', () => {
+      this.dialogContent=this.getPlayMessage();
+      this.displayedText = '';
+      this.startTextAnimation();
+    });
+    },
+    // 监听拿走物品事件
+    listenTakeItem() {
+    this.$root.$on('take-item', () => {
+      this.dialogContent=this.getPlayMessage();
+      this.displayedText = '';
+      this.startTextAnimation();
+      this.fetchUserInfo();
+    });
+    },
+    // 监听放下物品事件
+    listenDropItem() {
+    this.$root.$on('drop-item', () => {
+      this.dialogContent=this.getPlayMessage();
+      this.displayedText = '';
+      this.startTextAnimation();
+      this.fetchUserInfo();
+    });
+    },
     // 获取存储在 localStorage 中的 playerName
     getPlayerName() {
       return localStorage.getItem('playerName');
@@ -75,6 +119,10 @@ export default {
     // 获取存储在 localStorage 中的 token
     getPlayToken() {
       return localStorage.getItem('token');
+    },
+    // 获取存储在 localStorage 中的 message
+    getPlayMessage() {
+      return localStorage.getItem('message');
     },
     // 获取用户信息
     async fetchUserInfo() {
@@ -123,7 +171,8 @@ export default {
         2: '猴子园区',
         3: '狮子园区',
         4: '大象园区',
-        5: '出口'
+        5: '熊猫园区',
+        6: '出口'
       };
       if (!playerName || !token) {
         console.error('本地存储中没有找到 playerName 或 token');
@@ -178,9 +227,6 @@ export default {
       };
       return directionTexts[direction];
     },
-  },
-  created() {
-    this.fetchUserInfo();
   },
   beforeDestroy() {
     // 组件销毁时清理定时器
