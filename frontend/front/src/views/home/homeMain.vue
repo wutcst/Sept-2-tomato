@@ -63,7 +63,8 @@ export default {
         2: '猴子园区',
         3: '狮子园区',
         4: '大象园区',
-        5: '出口'
+        5: '熊猫园区',
+        6: '出口'
       }
     };
   },
@@ -241,7 +242,7 @@ export default {
 <style scoped>
 .location{
   position: relative;
-  left:40%;
+  left:35%;
   top: -36%;
 }
 .home-container {

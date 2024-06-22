@@ -184,6 +184,8 @@ export default {
           this.currentLocation.items.splice(index, 1); // 更新前端物品列表
           this.$root.$emit('take-item'); // 通知主组件拿走物品
         } else {
+          localStorage.setItem('message', `拿取物品失败,你的负重剩余量不足`);
+          this.$root.$emit('take-item'); // 通知主组件拿走物品
           console.error('拿取物品失败,你的负重剩余量不足:', responseData.message);
         }
       })
