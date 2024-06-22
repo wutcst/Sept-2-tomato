@@ -3,6 +3,7 @@
     <el-container>
       <el-main class="main-content">
         <main-content :currentRoomId="currentRoomId"></main-content>
+        <!-- <user-chat></user-chat> -->
         <div class="dialog-container">
           <div class="dialog">
             <div class="dialog-content">
@@ -30,6 +31,8 @@
       </el-main>
       <el-aside width="300px" class="sidebar-container">
         <app-sidebar></app-sidebar>
+        <img src="../../assets/images/Zoo.png" alt="">
+        <h2 class="location"><span>{{ locationMap[currentRoomId] }}</span></h2> <!-- 修改此行 -->
       </el-aside>
     </el-container>
   </el-container>
@@ -38,6 +41,7 @@
 <script>
 import MainContent from './components/mainContent.vue';
 import AppSidebar from './components/appSidebar.vue';
+// import UserChat from './components/userChat.vue';
 import axios from 'axios';
 
 export default {
@@ -45,6 +49,7 @@ export default {
   components: {
     MainContent,
     AppSidebar,
+    // UserChat
   },
   data() {
     return {
@@ -53,6 +58,13 @@ export default {
       dialogContent: '欢迎来到动物园！',
       displayedText: '',
       displayTimeout: null,
+      locationMap: {
+        1: '入口',
+        2: '猴子园区',
+        3: '狮子园区',
+        4: '大象园区',
+        5: '出口'
+      }
     };
   },
   methods: {
@@ -156,23 +168,6 @@ export default {
       };
       animate();
     },
-    // // 更新玩家房间Id的方法
-    // updatePlayerRoomId(nextRoomId) {
-    //   const playerId = this.playerInfo.playerID; // 从用户信息中获取 playerId
-    //   if (!playerId) {
-    //     console.error('playerId 未找到');
-    //     return;
-    //   }
-    //   axios.put(`/api/player/${playerId}/room`, { roomId: nextRoomId }) // 使用 playerId 访问后端 API
-    //     .then(response => {
-    //       console.log('玩家房间Id更新成功：', response.data);
-    //       // 可以根据后端的返回进行适当的处理
-    //     })
-    //     .catch(error => {
-    //       console.error('更新玩家房间Id失败：', error);
-    //       // 处理更新失败的情况
-    //     });
-    // },
     // 获取方向文本
     getDirectionText(direction) {
       const directionTexts = {
@@ -198,17 +193,25 @@ export default {
 </script>
 
 <style scoped>
+.location{
+  position: relative;
+  left:40%;
+  top: -36%;
+}
 .home-container {
-  background-image: url("../../assets/images/background.png");
+  background: url("../../assets/images/background.png") no-repeat;
   background-size: 100%;
-  height: 100vh;
-  width: auto;
+  width: 100%;
+  height:100%;
   display: flex;
   flex-direction: column;
+  position: absolute;
 }
 
 .main-content {
   flex: 1;
+  width: 50%;
+  height:80%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

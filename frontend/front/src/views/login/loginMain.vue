@@ -79,4 +79,9 @@
 
 <style scoped>
     @import url("../../assets/css/css_mine.css");
+    h2 {
+    margin-left: 150px;
+    margin-right: 150px;
+    border-radius: 10px;
+    }
 </style>

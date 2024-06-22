@@ -1,6 +1,6 @@
 .loginBac {
     margin: 0;
-    background-image: url("../../assets/images/background.png");
+    background: url("../../assets/images/background.png") no-repeat;
     background-size: 100%;
     background-position: center;
     font-family: Arial, sans-serif;
@@ -22,8 +22,6 @@
 }
 
 h2 {
-    color: #ffffff;
-    background-color: #ccc;
     margin-left: 150px;
     margin-right: 150px;
     border-radius: 10px;

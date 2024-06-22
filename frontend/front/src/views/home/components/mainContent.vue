@@ -1,12 +1,13 @@
 <template>
   <div class="main-content" :style="{ backgroundImage: `url(${currentLocation.backgroundImage})` }">
     <div class="map">
-      <h1>当前位置: <span>{{ currentLocation.name }}</span></h1>
+        <!-- <img class="location" src="../../../assets/images/Zoo.png" alt="">
+        <h2><span class="locationWord">{{ currentLocation.name }}</span></h2> -->
       <div v-if="currentLocation.items.length > 0" class="items">
         <div
           class="item"
           v-for="(item, index) in currentLocation.items"
-          :key="item.id"
+          :key="item.id + '-' + index"
           @mouseenter="showTooltip(index)"
           @mouseleave="hideTooltip"
         >
@@ -16,9 +17,16 @@
             <p>名称: {{ item.name }}</p>
             <p>描述: {{ item.description }}</p>
             <p>重量: {{ item.weight }}</p>
-            <p>是否魔法物品: {{ item.isMagic ? '是' : '否' }}</p>
+            <p>物品类型：
+              {{ 
+                item.isMagic === 1 ? '魔法物品' :
+                item.isMagic === 2 ? '永久物品' :
+                '一次性物品'
+              }}
+            </p>
+            <button @click.stop="confirmTakeItem(index)">拿取</button>
+            <button>投喂</button>
           </div>
-          <button @click.stop="confirmTakeItem(index)">拿取</button>
         </div>
       </div>
       <div v-else>
@@ -32,6 +40,7 @@ import axios from 'axios';
 import mapImage from '../../../assets/images/map.jpg';
 import bananaImage from '../../../assets/images/banana.jpg';
 import cookieImage from '../../../assets/images/cookie.jpg';
+import meatImage from '../../../assets/images/meat.jpg';
 import zooGate from '../../../assets/images/zooGate.jpg';
 import monkeyZone from '../../../assets/images/monkeyZone.jpg';
 import lionZone from '../../../assets/images/lionZone.jpg';
@@ -77,7 +86,8 @@ export default {
       itemMap: {
         1: { id: 1, name: '地图', imageId: mapImage, color: '#ffcc99', borderColor: '#cc9966' },
         2: { id: 2, name: '香蕉', imageId: bananaImage, color: '#ffcc99', borderColor: '#cc9966' },
-        3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' }
+        3: { id: 3, name: '魔法饼干', imageId: cookieImage, color: '#ffcc99', borderColor: '#cc9966' },
+        4: { id: 4, name: '生肉', imageId: meatImage, color: '#ffcc99', borderColor: '#cc9966' }
       },
       tooltipIndex: null,
       takingItem: false
@@ -96,7 +106,16 @@ export default {
       immediate: true
     }
   },
+  created() {
+  this.listenDropItem(); // 组件创建时监听放下物品事件
+  },
   methods: {
+    // 监听放下物品事件
+    listenDropItem() {
+    this.$root.$on('drop-item', () => {
+      this.updateLocation(this.currentRoomId); // 放下物品后更新当前位置的物品列表
+    });
+    },
     updateLocation(roomId) {
       const token = localStorage.getItem('token'); // 获取用户 token
       axios.post('http://10.78.250.34:8081/room/check', 
@@ -111,7 +130,7 @@ export default {
               id: item.itemID,
               name: item.itemName,
               description: item.description,
-              isMagic: item.isMagic === 1,
+              isMagic: item.isMagic,
               weight: item.weight,
               imageId: this.itemMap[item.itemID].imageId  // 获取物品对应的图片
             };
@@ -140,8 +159,29 @@ export default {
       this.takingItem = false;
     },
     takeItem(index) {
-      const item = this.currentLocation.items.splice(index, 1)[0];
-      alert(`你拿到了${item.name}`);
+      const item = this.currentLocation.items[index];
+      const token = localStorage.getItem('token'); // 获取用户 token
+      const playerName = localStorage.getItem('playerName'); // 获取玩家名称
+      axios.post('http://10.78.250.34:8081/item/take', 
+        {
+          itemID: item.id,
+          playerName: playerName
+        },
+        { headers: { 'token': token } }
+      )
+      .then(response => {
+        const responseData = response.data;
+        if (responseData.code === 200) {
+          alert(`你拿到了${item.name}`);
+          this.currentLocation.items.splice(index, 1); // 更新前端物品列表
+          this.$root.$emit('take-item'); // 通知主组件拿走物品
+        } else {
+          console.error('拿取物品失败,你的负重剩余量不足:', responseData.message);
+        }
+      })
+      .catch(error => {
+        console.error('拿取物品出错:', error);
+      });
     }
   }
 };
@@ -195,7 +235,7 @@ export default {
   padding: 10px;
   border-radius: 5px;
   z-index: 1000;
-  width: 200px;
+  width: 150px;
   text-align: left;
 }
 button {
