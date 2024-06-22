@@ -12,7 +12,7 @@
                         <form @submit.prevent="changePassword">
                             <div class="changeDisplay border2">
                                 <el-input placeholder="用户名" v-model="username"></el-input>
-                                 <el-input type="password" placeholder="新密码" v-model="newPassword"></el-input>
+                                <el-input type="password" placeholder="新密码" v-model="newPassword"></el-input>
                                 <el-input type="password" placeholder="确认密码" v-model="confirmPassword"></el-input>
                             </div>
                             <div class="clear"></div>
@@ -87,9 +87,10 @@
 
 <style scoped>
     @import url("../../assets/css/css_mine.css");
+
     h2 {
-    margin-left: 150px;
-    margin-right: 150px;
-    border-radius: 10px;
+        margin-left: 150px;
+        margin-right: 150px;
+        border-radius: 10px;
     }
 </style>

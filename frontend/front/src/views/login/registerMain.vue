@@ -52,7 +52,7 @@
                     this.$message.error('密码长度必须在5-8位之间！');
                     return;
                 }
-               
+
                 // 发送注册请求到后端
                 axios.post('http://10.78.250.34:8081/player/register', {
                     playerName: this.username,
@@ -61,7 +61,7 @@
                     .then(response => {
                         if (response.data.code === 200) {
                             this.$message.success(response.data.message);
-                            this.$router.push("/login-main");  
+                            this.$router.push("/login-main");
                         } else {
                             this.$message.error(response.data.message); // 显示失败消息
                         }
@@ -78,11 +78,11 @@
     @import url("../../assets/css/css_mine.css");
 
     h2 {
-    margin-left: 150px;
-    margin-right: 150px;
-    border-radius: 10px;
+        margin-left: 150px;
+        margin-right: 150px;
+        border-radius: 10px;
     }
-    
+
     .el-date-editor.el-input,
     .el-date-editor.el-input__inner {
         width: 100%;
