@@ -24,4 +24,8 @@ public interface ItemMapper {
     Integer check(Integer playerID, Integer itemID);
 
     List<Object> checkItemsInBag(Integer playerID);
+
+    Integer checkEffect(Integer currentRoomID, Integer itemID);
+
+    String checkEffectDescription(Integer currentRoomID, Integer itemID);
 }

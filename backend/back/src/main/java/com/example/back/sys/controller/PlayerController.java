@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 @CrossOrigin
@@ -101,4 +103,7 @@ public class PlayerController {
         log.info("玩家密码重置失败，玩家姓名：" + player.getPlayerName());
         return Result.fail("服务器异常，修改失败");
     }
+
+
+
 }

@@ -113,4 +113,5 @@ public class RoomController {
         logger.info("房间内的物品：" + items);
         return Result.success(items);
     }
+
 }

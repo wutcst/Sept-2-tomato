@@ -32,4 +32,14 @@
         SELECT COUNT(*) FROM playeritems WHERE ItemID = #{itemID} AND playerID = #{playerID}
     </select>
 
+    <select id="checkEffect" resultType="java.lang.Integer">
+        SELECT COALESCE(effectNum, 0) AS effectNum
+        FROM itemeffect
+        WHERE roomID = #{currentRoomID} AND itemID = #{itemID}
+    </select>
+
+    <select id="checkEffectDescription" resultType="java.lang.String">
+        SELECT effect FROM itemeffect WHERE roomID = #{currentRoomID} AND itemID = #{itemID}
+    </select>
+
 </mapper>

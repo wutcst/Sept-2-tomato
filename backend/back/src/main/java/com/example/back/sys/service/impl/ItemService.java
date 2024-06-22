@@ -3,6 +3,7 @@ package com.example.back.sys.service.impl;
 import com.example.back.sys.entity.Item;
 import com.example.back.sys.entity.Player;
 import com.example.back.sys.mapper.ItemMapper;
+import com.example.back.sys.service.IItemService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ItemService {
+public class ItemService implements IItemService {
 
     @Resource
     private ItemMapper itemMapper;
@@ -18,6 +19,7 @@ public class ItemService {
         return itemMapper.getItemById(itemID);
     }
 
+    @Override
     public boolean takeItem(Player player, Item item) {
         try {
             itemMapper.renewMap_delete(player.getCurrentRoomID(),item.getItemID());
@@ -28,11 +30,11 @@ public class ItemService {
         }
         return true;
     }
-
+    @Override
     public boolean checkItem(Integer playerID, Integer itemID) {
         return itemMapper.check(playerID,itemID)!=0;
     }
-
+    @Override
     public boolean dropItem(Player player, Item item) {
         try {
             itemMapper.renewMap_add(player.getCurrentRoomID(),item.getItemID());
@@ -43,7 +45,7 @@ public class ItemService {
         }
         return true;
     }
-
+    @Override
     public List<Item> checkItemsInBag(Integer playerID) {
         List<Object> l = itemMapper.checkItemsInBag(playerID);
         List<Item> res = new ArrayList<>();
@@ -52,7 +54,7 @@ public class ItemService {
         }
         return res;
     }
-
+    @Override
     public boolean eatItem(Player player, Item item) {
         try {
             player.setCurrentWeight(player.getCurrentWeight() - item.getWeight());
@@ -69,4 +71,21 @@ public class ItemService {
         }
         return true;
     }
+
+    @Override
+    public Integer getItemEffectNum(Integer currentRoomID, Integer itemID) {
+        return itemMapper.checkEffect(currentRoomID,itemID);
+    }
+
+    @Override
+    public String getItemEffectDescription(Integer currentRoomID, Integer itemID) {
+        return itemMapper.checkEffectDescription(currentRoomID,itemID);
+    }
+
+    @Override
+    public void feedItem(Player player, Item item) {
+        itemMapper.renewPlayerItem_delete(player,item);
+    }
+
+
 }

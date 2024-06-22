@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Random;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,4 +18,10 @@ public class Player {
     private Integer playerID;
     private String playerName;
     private String passWord;
+
+    public void enterRandomRoom(){
+        Random rand = new Random();
+        this.setCurrentRoomID(rand.nextInt(6));
+    }
+
 }

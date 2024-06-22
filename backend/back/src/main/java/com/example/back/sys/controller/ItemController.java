@@ -3,8 +3,9 @@ package com.example.back.sys.controller;
 import com.example.back.sys.Result;
 import com.example.back.sys.entity.Item;
 import com.example.back.sys.entity.Player;
+import com.example.back.sys.service.IPlayerService;
+import com.example.back.sys.service.IRoomService;
 import com.example.back.sys.service.impl.ItemService;
-import com.example.back.sys.service.impl.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,10 @@ public class ItemController {
     private ItemService itemService;
 
     @Autowired
-    private PlayerService playerService;
+    private IPlayerService playerService;
+
+    @Autowired
+    private IRoomService roomService;
 
     /**
      * 根据物品ID获取物品信息。
@@ -153,7 +157,21 @@ public class ItemController {
 
         // 玩家没有这个物品
         if (!itemService.checkItem(player.getPlayerID(), itemID)) return Result.fail("玩家没有该物品");
-        
+
+        Integer effectNum = itemService.getItemEffectNum(player.getCurrentRoomID(),itemID);
+
+        String res = itemService.getItemEffectDescription(player.getCurrentRoomID(),itemID);
+        if(res==null) res = item.getItemName()+"在这使用没有任何效果";
+        else{
+            player.setCurrentWeight(player.getCurrentWeight()-item.getWeight());
+            if(effectNum==1) {
+                player.enterRandomRoom();
+                roomService.updatePlayer(player);
+            }
+            itemService.feedItem(player,item);
+        }
+
+        return Result.success(res);
 
     }
 
