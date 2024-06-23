@@ -29,90 +29,130 @@
 </template>
 
 <script>
-    import { emojiArr } from '../../../assets/js/emojiArr';
+import { emojiArr } from '../../../assets/js/emojiArr';
 
-    export default {
-        data() {
-            return {
-                dialogVisible: false,
-                emojiDialogVisible: false,
-                onlineUsers: 0,
-                messages: [],
-                newMessage: '',
-                emojiArr
+export default {
+    data() {
+        return {
+            dialogVisible: false,
+            emojiDialogVisible: false,
+            onlineUsers: 0,
+            messages: [],
+            newMessage: '',
+            emojiArr,
+            ws: null
+        };
+    },
+    created() {
+        this.connectToWebSocket();
+    },
+    methods: {
+        openChat() {
+            this.dialogVisible = true;
+        },
+        openEmojiPicker() {
+            this.emojiDialogVisible = true;
+        },
+        selectEmoji(emoji) {
+            this.newMessage += emoji;
+        },
+        connectToWebSocket() {
+            this.ws = new WebSocket('ws://10.78.250.34:8081/webSocket/' + localStorage.getItem('playerName'));
+
+            this.ws.onopen = () => {
+                console.log('WebSocket connected');
+            };
+            this.ws.onmessage = (event) => {
+                try {
+                    const data = event.data;
+                    alert(data.type);
+                    switch (data.type) {
+                        case 'update':
+                            this.$root.$emit('update-item'); // 通知主组件拿走物品
+                            break;
+                        case 'message':
+                            this.messages.push(data);
+                            break;
+                        case 'onlineUsers':
+                            this.onlineUsers = data.count;
+                            break;
+                        default:
+                            console.log('Unknown message type:', data);
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                }
+            };
+
+            this.ws.onclose = () => {
+                console.log('WebSocket closed');
+                this.onlineUsers = 0;
+            };
+
+            this.ws.onerror = (error) => {
+                console.log('WebSocket error:', error);
             };
         },
-        created() {
-            this.connectToWebSocket();
+        sendMessage() {
+            if (this.newMessage.trim() !== '') {
+                this.sendMessageToServer({
+                    type: 'message',
+                    text: this.newMessage,
+                    user: this.getPlayerName()
+                });
+                this.newMessage = '';
+            }
         },
-        methods: {
-            openChat() {
-                this.dialogVisible = true;
-            },
-            openEmojiPicker() {
-                this.emojiDialogVisible = true;
-            },
-            selectEmoji(emoji) {
-                this.newMessage += emoji;
-            },
-            connectToWebSocket() {
-                // WebSocket 连接逻辑
-            },
-            sendMessage() {
-                if (this.newMessage.trim() !== '') {
-                    this.sendMessageToServer({
-                        type: 'sendMessage',
-                        text: this.newMessage,
-                        sender: this.getPlayerName(),
-                    });
-                    this.newMessage = '';
-                }
-            },
-            getPlayerName() {
-                return localStorage.getItem('playerName') || '未知用户';
-            },
+        sendMessageToServer(message) {
+            this.ws.send(JSON.stringify(message));
         },
-        beforeDestroy() {
-            // 组件销毁前关闭 WebSocket 连接逻辑
-        },
-    };
+        getPlayerName() {
+            return localStorage.getItem('playerName') || '未知用户';
+        }
+    },
+    beforeDestroy() {
+        if (this.ws) {
+            this.ws.close();
+        }
+    }
+};
 </script>
 
 <style scoped>
-    .chat-container {
-        display: flex;
-        flex-direction: column;
-        height: 400px;
-    }
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+}
 
-    .chat-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .chat-content {
-        background-color: rgb(240, 233, 225);
-        flex: 1;
-        overflow-y: auto;
-    }
+.chat-content {
+    background-color: rgb(240, 233, 225);
+    flex: 1;
+    overflow-y: auto;
+}
 
-    .chat-message {
-        margin: 5px 0;
-    }
+.chat-message {
+    margin: 5px 0;
+}
 
-    .chat-footer {
-        display: flex;
-    }
+.chat-footer {
+    display: flex;
+}
 
-    .emoji-container {
-        display: flex;
-        flex-wrap: wrap;
-    }
+.emoji-container {
+    display: flex;
+    flex-wrap: wrap;
+}
 
-    .emoji-container span {
-        cursor: pointer;
-        margin: 10px;
-        font-size: 24px;
-    }
+.emoji-container span {
+    cursor: pointer;
+    margin: 10px;
+    font-size: 24px;
+}
 </style>

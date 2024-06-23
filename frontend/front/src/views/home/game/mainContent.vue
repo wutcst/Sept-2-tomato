@@ -110,11 +110,18 @@
         },
         created() {
             this.listenDropItem(); // 组件创建时监听放下物品事件
+            this.listenUpdateItem(); // 组件创建时监听更新物品事件
         },
         methods: {
             // 监听放下物品事件
             listenDropItem() {
                 this.$root.$on('drop-item', () => {
+                    this.updateLocation(this.currentRoomId); // 放下物品后更新当前位置的物品列表
+                });
+            },
+            // 监听更新物品事件
+            listenUpdateItem() {
+                this.$root.$on('update-item', () => {
                     this.updateLocation(this.currentRoomId); // 放下物品后更新当前位置的物品列表
                 });
             },

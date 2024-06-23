@@ -76,10 +76,17 @@
         },
         created() {
             this.listenTakeItem(); // 组件创建时监听拿取物品事件
+            this.listenUpdateItem(); // 组件创建时监听更新物品事件
         },
         methods: {
             listenTakeItem() {
                 this.$root.$on('take-item', () => {
+                    this.fetchPlayerInfo();
+                    this.fetchInventoryItems();
+                });
+            },
+            listenUpdateItem() {
+                this.$root.$on('update-item', () => {
                     this.fetchPlayerInfo();
                     this.fetchInventoryItems();
                 });
