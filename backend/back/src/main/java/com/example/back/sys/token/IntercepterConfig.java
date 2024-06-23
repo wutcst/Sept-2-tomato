@@ -26,9 +26,9 @@ public class IntercepterConfig implements WebMvcConfigurer {
         List<String> excludePath = new ArrayList<>();//List用来保存所有不需要拦截的路径
         excludePath.add("/player/register"); //注册
         excludePath.add("/player/login"); //登录
+        excludePath.add("/player/reset-password"); //修改用户密码
 //        excludePath.add("/player/"); //获取所有用户
 //        excludePath.add("/player/getPlayerInfo"); //获取单个用户
-//        excludePath.add("/player/reset-password"); //修改用户密码
 //        excludePath.add("/item/getItemInfo");
 //        excludePath.add("/item/take");
 //        excludePath.add("/item/drop");

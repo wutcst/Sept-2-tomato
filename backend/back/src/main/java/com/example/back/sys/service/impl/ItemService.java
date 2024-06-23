@@ -1,5 +1,6 @@
 package com.example.back.sys.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.example.back.sys.entity.Item;
 import com.example.back.sys.entity.Message;
 import com.example.back.sys.entity.Player;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -30,8 +32,8 @@ public class ItemService implements IItemService {
             //通知所有在该房间的玩家要更新信息
             List<Integer> list_to_renew = itemMapper.checkPlayerInRoom(player.getCurrentRoomID());
             for(Integer i:list_to_renew) {
-                Message message = new Message("message",player.getPlayerName()+"捡起了"+item.getItemName());
-                WebSocketServerUtil.sendInfo(String.valueOf(message), Long.valueOf(i));
+                Message message = new Message("update",player.getPlayerName()+"捡起了"+item.getItemName());
+                WebSocketServerUtil.sendInfo(JSON.toJSONString(message), Long.valueOf(i));
             }
         }catch(Exception e){
             return false;
@@ -51,8 +53,8 @@ public class ItemService implements IItemService {
             //通知所有在该房间的玩家要更新信息
             List<Integer> list_to_renew = itemMapper.checkPlayerInRoom(player.getCurrentRoomID());
             for(Integer i:list_to_renew) {
-                Message message = new Message("message",player.getPlayerName()+"丢下了"+item.getItemName());
-                WebSocketServerUtil.sendInfo(String.valueOf(message),Long.valueOf(i));
+                Message message = new Message("update",player.getPlayerName()+"丢下了"+item.getItemName());
+                WebSocketServerUtil.sendInfo(JSON.toJSONString(message),Long.valueOf(i));
             }
         }catch(Exception e){
             return false;
@@ -100,6 +102,5 @@ public class ItemService implements IItemService {
     public void feedItem(Player player, Item item) {
         itemMapper.renewPlayerItem_delete(player,item);
     }
-
 
 }
