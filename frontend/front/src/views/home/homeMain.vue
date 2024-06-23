@@ -3,8 +3,11 @@
         <el-container>
             <el-main class="main-content">
                 <main-content :currentRoomId="currentRoomId"></main-content>
-                <main-chat></main-chat>
-                <el-button class="back" @click="move('back')">返回</el-button>
+                <div class="main-chat"><main-chat></main-chat></div>
+                <div class="button-container">  
+                    <el-button  class="exit" @click="exitGame">退出游戏</el-button>
+                    <el-button class="back" @click="move('back')">返回</el-button>
+                </div>
                 <div class="dialog-container">
                     <div class="dialog">
                         <div class="dialog-content">
@@ -261,6 +264,12 @@
                 };
                 return directionTexts[direction];
             },
+            // 退出游戏
+            exitGame() {
+                localStorage.removeItem('playerName');
+                localStorage.removeItem('token');
+                this.$router.push('/login-main'); // 假设登录页面的路由是 '/login'
+            }
         },
         beforeDestroy() {
             // 组件销毁时清理定时器
@@ -298,6 +307,10 @@
         justify-content: flex-end;
     }
 
+    .main-chat{
+        display: flex;
+        flex-direction: row-reverse
+    }
     .dialog-container {
         margin-top: auto;
         height: 150px;
@@ -368,5 +381,17 @@
         font-size: 16px;
         padding-top: 0px;
         line-height: 1.5;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .back,
+    .exit {
+        font-size: 18px;
+        padding: 10px 10px;
     }
 </style>

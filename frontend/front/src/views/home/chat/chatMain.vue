@@ -1,6 +1,6 @@
 <template>
     <div>
-        <el-button @click="openChat">打开聊天</el-button>
+        <el-button class="font" @click="openChat">打开聊天</el-button>
         <el-dialog :visible.sync="dialogVisible" title="聊天室" width="50%">
             <div class="chat-container">
                 <div class="chat-header">
@@ -120,6 +120,9 @@ export default {
 </script>
 
 <style scoped>
+.font{
+    font-size:18px;
+}
 .chat-container {
     display: flex;
     flex-direction: column;
