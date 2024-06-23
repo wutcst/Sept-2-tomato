@@ -64,8 +64,8 @@ export default {
             };
             this.ws.onmessage = (event) => {
                 try {
-                    const data = event.data;
-                    alert(data.type);
+                    let data = JSON.parse(event.data);
+                    // alert(data.type);
                     switch (data.type) {
                         case 'update':
                             this.$root.$emit('update-item'); // 通知主组件拿走物品

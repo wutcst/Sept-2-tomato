@@ -63,7 +63,7 @@
                             this.$message.success(response.data.message);
                             this.$router.push("/login-main");
                         } else {
-                            this.$message.error(response.data.message); // 显示失败消息
+                            this.$message.error('注册失败'); // 显示失败消息
                         }
                     })
                     .catch(error => {
