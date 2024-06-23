@@ -1,9 +1,11 @@
 package com.example.back.sys.service.impl;
 
 import com.example.back.sys.entity.Item;
+import com.example.back.sys.entity.Message;
 import com.example.back.sys.entity.Player;
 import com.example.back.sys.mapper.ItemMapper;
 import com.example.back.sys.service.IItemService;
+import com.example.back.sys.websocket.WebSocketServerUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +27,12 @@ public class ItemService implements IItemService {
             itemMapper.renewMap_delete(player.getCurrentRoomID(),item.getItemID());
             itemMapper.renewPlayerItem_add(player,item);
             itemMapper.renewPlayer(player,item);
+            //通知所有在该房间的玩家要更新信息
+            List<Integer> list_to_renew = itemMapper.checkPlayerInRoom(player.getCurrentRoomID());
+            for(Integer i:list_to_renew) {
+                Message message = new Message("message",player.getPlayerName()+"捡起了"+item.getItemName());
+                WebSocketServerUtil.sendInfo(String.valueOf(message), Long.valueOf(i));
+            }
         }catch(Exception e){
             return false;
         }
@@ -40,6 +48,12 @@ public class ItemService implements IItemService {
             itemMapper.renewMap_add(player.getCurrentRoomID(),item.getItemID());
             itemMapper.renewPlayerItem_delete(player,item);
             itemMapper.renewPlayer(player,item);
+            //通知所有在该房间的玩家要更新信息
+            List<Integer> list_to_renew = itemMapper.checkPlayerInRoom(player.getCurrentRoomID());
+            for(Integer i:list_to_renew) {
+                Message message = new Message("message",player.getPlayerName()+"丢下了"+item.getItemName());
+                WebSocketServerUtil.sendInfo(String.valueOf(message),Long.valueOf(i));
+            }
         }catch(Exception e){
             return false;
         }

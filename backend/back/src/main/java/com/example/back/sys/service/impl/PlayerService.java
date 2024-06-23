@@ -38,4 +38,9 @@ public class PlayerService implements IPlayerService {
     public boolean renewPlayer(Player player){
         return playerMapper.renewPlayer(player);
     }
+
+    @Override
+    public void setLogin(Integer playerID) {
+        playerMapper.setLogin(playerID);
+    }
 }

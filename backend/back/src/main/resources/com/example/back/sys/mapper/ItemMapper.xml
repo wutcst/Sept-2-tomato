@@ -41,5 +41,8 @@
     <select id="checkEffectDescription" resultType="java.lang.String">
         SELECT effect FROM itemeffect WHERE roomID = #{currentRoomID} AND itemID = #{itemID}
     </select>
+    <select id="checkPlayerInRoom" resultType="java.lang.Integer">
+        SELECT PlayerID FROM player WHERE CurrentRoomID=#{currentRoomID} AND Status = 1
+    </select>
 
 </mapper>

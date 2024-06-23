@@ -28,4 +28,6 @@ public interface ItemMapper {
     Integer checkEffect(Integer currentRoomID, Integer itemID);
 
     String checkEffectDescription(Integer currentRoomID, Integer itemID);
+
+    List<Integer> checkPlayerInRoom(Integer currentRoomID);
 }

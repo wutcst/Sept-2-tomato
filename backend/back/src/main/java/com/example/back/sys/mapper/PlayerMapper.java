@@ -15,4 +15,6 @@ public interface PlayerMapper {
     boolean registerPlayer(Player player);
 
     boolean renewPlayer(Player player);
+
+    void setLogin(Integer playerID);
 }

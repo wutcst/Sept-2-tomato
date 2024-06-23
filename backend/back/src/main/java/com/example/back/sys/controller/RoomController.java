@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 @CrossOrigin
@@ -75,6 +76,7 @@ public class RoomController {
      */
     @PostMapping("/go")
     public Result go(@RequestBody Map<String, Object> request) {
+        System.out.println(request);
         String playerName = (String) request.get("playerName");
         int direction = (int) request.get("direction");
 

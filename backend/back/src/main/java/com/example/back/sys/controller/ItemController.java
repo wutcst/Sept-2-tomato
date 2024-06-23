@@ -52,7 +52,6 @@ public class ItemController {
         Integer itemID = (Integer) request.get("itemID");
         String playerName = (String) request.get("playerName");
 
-
         Player player = playerService.findByPlayerName(playerName);
         Item item = itemService.getItemById(itemID);
         // id传错了的情况

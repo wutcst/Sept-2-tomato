@@ -7,6 +7,9 @@
     <update id="renewPlayer">
         UPDATE player SET PassWord = #{passWord} WHERE PlayerName = #{playerName}
     </update>
+    <update id="setLogin">
+        UPDATE player SET Status = 1 WHERE PlayerID = #{playerID}
+    </update>
 
     <select id="getAllPlayers" resultType="com.example.back.sys.entity.Player">
         SELECT * FROM player

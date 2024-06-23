@@ -14,4 +14,6 @@ public interface IPlayerService {
     boolean register(Player player);
 
     boolean renewPlayer(Player player);
+
+    void setLogin(Integer playerID);
 }
