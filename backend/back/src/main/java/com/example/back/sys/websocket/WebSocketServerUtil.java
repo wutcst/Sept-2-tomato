@@ -1,5 +1,8 @@
 package com.example.back.sys.websocket;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.example.back.sys.entity.Message;
 import com.example.back.sys.entity.Player;
 import com.example.back.sys.service.IPlayerService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +17,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -36,7 +40,7 @@ public class WebSocketServerUtil {
     }
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("playerName") String playerName){
+    public void onOpen(Session session, @PathParam("playerName") String playerName) throws Exception {
 
         playerService = applicationContext.getBean(IPlayerService.class);
 
@@ -52,23 +56,35 @@ public class WebSocketServerUtil {
             webSocketMap .put(uId,this);
             webSocketSet.add(this);
         }
+        this.sendOnlineCount();
 
         log.info("【websocket消息】有新的连接，总数：{}",webSocketMap.size());
     }
 
     @OnClose
-    public void onClose(){
+    public void onClose() throws Exception {
         if(webSocketMap.containsKey(uId)){
             webSocketMap.remove(uId);
             //从set中删除
             webSocketSet.remove(this);
+            playerService.setOffLine(uId);
         }
+        this.sendOnlineCount();
         log.info("【websocket消息】连接断开，总数：{}",webSocketSet.size());
     }
 
     @OnMessage
     public void onMessage(String message){
         log.info("【websocket消息】收到客户端发来的消息：{}",message);
+
+        List<Integer> message_list = playerService.checkPlayerOnline();
+        for(Integer i:message_list) {
+            try {
+                WebSocketServerUtil.sendInfo(message,Long.valueOf(i));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void sendMessage(String message){
@@ -91,6 +107,15 @@ public class WebSocketServerUtil {
             log.error("用户"+uId+",不在线！");
             throw new Exception("连接已关闭，请刷新页面后重试");
         }
-
     }
+
+    public void sendOnlineCount() throws Exception {
+        List<Integer> message_list = playerService.checkPlayerOnline();
+        Integer res = message_list.size();
+        Message message = new Message("onlineUsers",res.toString());
+        for(Integer i:message_list){
+            this.sendInfo(JSON.toJSONString(message),Long.valueOf(i));
+        }
+    }
+
 }

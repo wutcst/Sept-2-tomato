@@ -17,4 +17,8 @@ public interface PlayerMapper {
     boolean renewPlayer(Player player);
 
     void setLogin(Integer playerID);
+
+    List<Integer> checkPlayerOnline();
+
+    void setOffLine(Integer uId);
 }

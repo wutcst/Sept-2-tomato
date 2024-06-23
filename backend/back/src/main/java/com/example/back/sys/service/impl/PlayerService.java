@@ -43,4 +43,14 @@ public class PlayerService implements IPlayerService {
     public void setLogin(Integer playerID) {
         playerMapper.setLogin(playerID);
     }
+
+    @Override
+    public List<Integer> checkPlayerOnline() {
+        return playerMapper.checkPlayerOnline();
+    }
+
+    @Override
+    public void setOffLine(Long uId) {
+        playerMapper.setOffLine(uId.intValue());
+    }
 }

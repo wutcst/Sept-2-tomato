@@ -16,4 +16,8 @@ public interface IPlayerService {
     boolean renewPlayer(Player player);
 
     void setLogin(Integer playerID);
+
+    List<Integer> checkPlayerOnline();
+
+    void setOffLine(Long uId);
 }

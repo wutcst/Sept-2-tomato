@@ -10,6 +10,9 @@
     <update id="setLogin">
         UPDATE player SET Status = 1 WHERE PlayerID = #{playerID}
     </update>
+    <update id="setOffLine">
+        UPDATE player SET Status = 0 WHERE PlayerID = #{uId}
+    </update>
 
     <select id="getAllPlayers" resultType="com.example.back.sys.entity.Player">
         SELECT * FROM player
@@ -19,5 +22,8 @@
     </select>
     <select id="judgeExist" resultType="com.example.back.sys.entity.Player">
         SELECT * FROM player WHERE PlayerName = #{playerName} AND PassWord =#{passWord}
+    </select>
+    <select id="checkPlayerOnline" resultType="java.lang.Integer">
+        SELECT PlayerID FROM player WHERE Status = 1
     </select>
 </mapper>
