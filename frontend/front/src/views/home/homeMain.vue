@@ -4,6 +4,7 @@
             <el-main class="main-content">
                 <main-content :currentRoomId="currentRoomId"></main-content>
                 <main-chat></main-chat>
+                <el-button class="back" @click="move('back')">返回</el-button>
                 <div class="dialog-container">
                     <div class="dialog">
                         <div class="dialog-content">
@@ -18,11 +19,9 @@
                                 <el-button class="north" @click="move('north')">北</el-button>
                             </div>
                             <div class="row">
-                                <el-button class="back" @click="move('back')">返回</el-button>
                                 <el-button class="west" @click="move('west')">西</el-button>
                                 <el-button class="stay" @click="move('stay')">S</el-button>
                                 <el-button class="east" @click="move('east')">东</el-button>
-                                <el-button class="back" @click="move('back')">返回</el-button>
                             </div>
                             <div class="row">
                                 <el-button class="south" @click="move('south')">南</el-button>
@@ -292,7 +291,7 @@
 
     .main-content {
         flex: 1;
-        width: 80%;
+        width: 95%;
         height: 80%;
         display: flex;
         flex-direction: column;

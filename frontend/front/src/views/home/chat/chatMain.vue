@@ -13,7 +13,7 @@
                 </div>
                 <div class="chat-footer">
                     <el-button class="emoji" @click="openEmojiPicker">😀</el-button>
-                    <el-input v-model="newMessage" placeholder="输入消息..." @keyup.enter="sendMessage"></el-input>
+                    <el-input v-model="newMessage" placeholder="输入消息..." @keydown.enter="sendMessage"></el-input>
                     <el-button @click="sendMessage">发送</el-button>
                 </div>
             </div>
@@ -36,7 +36,7 @@ export default {
         return {
             dialogVisible: false,
             emojiDialogVisible: false,
-            onlineUsers: 0,
+            onlineUsers: '0',
             messages: [],
             newMessage: '',
             emojiArr,
@@ -65,7 +65,6 @@ export default {
             this.ws.onmessage = (event) => {
                 try {
                     let data = JSON.parse(event.data);
-                    // alert(data.type);
                     switch (data.type) {
                         case 'update':
                             this.$root.$emit('update-item'); // 通知主组件拿走物品
@@ -74,7 +73,7 @@ export default {
                             this.messages.push(data);
                             break;
                         case 'onlineUsers':
-                            this.onlineUsers = data.count;
+                            this.onlineUsers = data.text;
                             break;
                         default:
                             console.log('Unknown message type:', data);
@@ -86,7 +85,7 @@ export default {
 
             this.ws.onclose = () => {
                 console.log('WebSocket closed');
-                this.onlineUsers = 0;
+                this.onlineUsers = '0';
             };
 
             this.ws.onerror = (error) => {
@@ -94,6 +93,7 @@ export default {
             };
         },
         sendMessage() {
+            console.log('sendMessage method called'); // 添加日志检查
             if (this.newMessage.trim() !== '') {
                 this.sendMessageToServer({
                     type: 'message',
@@ -104,6 +104,7 @@ export default {
             }
         },
         sendMessageToServer(message) {
+            console.log('sendMessageToServer method called with message:', message); // 添加日志检查
             this.ws.send(JSON.stringify(message));
         },
         getPlayerName() {
