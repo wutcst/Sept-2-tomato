@@ -5,7 +5,7 @@
                 <main-content :currentRoomId="currentRoomId"></main-content>
                 <div class="main-chat"><main-chat></main-chat></div>
                 <div class="button-container">  
-                    <el-button  class="exit" @click="exitGame">退出游戏</el-button>
+                    <el-button  class="exit" @click="showExitDialog = true">退出游戏</el-button>
                     <el-button class="back" @click="move('back')">返回</el-button>
                 </div>
                 <div class="dialog-container">
@@ -13,7 +13,6 @@
                         <div class="dialog-content">
                             <img width="100px" src="../../assets/images/npc.jpg" alt="">
                             <div class="text-display">
-                                <!-- 动态显示文本的区域 -->
                                 <p>{{ displayedText }}</p>
                             </div>
                         </div>
@@ -36,9 +35,22 @@
             <el-aside width="300px" class="sidebar-container">
                 <app-sidebar></app-sidebar>
                 <img src="../../assets/images/Zoo.png" alt="">
-                <h2 class="location"><span>{{ locationMap[currentRoomId] }}</span></h2> <!-- 修改此行 -->
+                <h2 class="location"><span>{{ locationMap[currentRoomId] }}</span></h2>
             </el-aside>
         </el-container>
+
+        <!-- 确认退出对话框 -->
+        <el-dialog
+            title="确认退出"
+            :visible.sync="showExitDialog"
+            width="30%"
+            @close="showExitDialog = false">
+            <span>您确定要退出游戏吗？</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showExitDialog = false">取消</el-button>
+                <el-button type="primary" @click="confirmExit">确认</el-button>
+            </span>
+        </el-dialog>
     </el-container>
 </template>
 
@@ -58,7 +70,7 @@
         data() {
             return {
                 playerInfo: null,
-                currentRoomId: 1, // 初始化为入口的 roomId
+                currentRoomId: 1,
                 dialogContent: `欢迎进入《勇闯动物园》!${this.getPlayerName()}`,
                 displayedText: '',
                 displayTimeout: null,
@@ -70,21 +82,21 @@
                     5: '熊猫园区',
                     6: '出口'
                 },
-                visitedDirection: [], // 记录访问的方向
+                visitedDirection: [],
                 backDirection: '',
+                showExitDialog: false // 控制退出对话框的显示
             };
         },
         created() {
             this.displayedText = '';
             this.startTextAnimation();
             this.fetchUserInfo();
-            this.listenFeedItem(); // 组件创建时监听投喂物品事件
-            this.listenUseItem(); // 组件创建时监听使用物品事件
-            this.listenTakeItem(); // 组件创建时监听拿走物品事件
-            this.listenDropItem();// 组件创建时监听放下物品事件
+            this.listenFeedItem();
+            this.listenUseItem();
+            this.listenTakeItem();
+            this.listenDropItem();
         },
         methods: {
-            // 监听投喂物品事件
             listenFeedItem() {
                 this.$root.$on('feed-item', () => {
                     this.dialogContent = this.getPlayMessage();
@@ -93,7 +105,6 @@
                     this.fetchUserInfo();
                 });
             },
-            // 监听使用物品事件
             listenUseItem() {
                 this.$root.$on('use-item', () => {
                     this.dialogContent = this.getPlayMessage();
@@ -101,7 +112,6 @@
                     this.startTextAnimation();
                 });
             },
-            // 监听拿走物品事件
             listenTakeItem() {
                 this.$root.$on('take-item', () => {
                     this.dialogContent = this.getPlayMessage();
@@ -110,7 +120,6 @@
                     this.fetchUserInfo();
                 });
             },
-            // 监听放下物品事件
             listenDropItem() {
                 this.$root.$on('drop-item', () => {
                     this.dialogContent = this.getPlayMessage();
@@ -119,19 +128,15 @@
                     this.fetchUserInfo();
                 });
             },
-            // 获取存储在 localStorage 中的 playerName
             getPlayerName() {
                 return localStorage.getItem('playerName');
             },
-            // 获取存储在 localStorage 中的 token
             getPlayToken() {
                 return localStorage.getItem('token');
             },
-            // 获取存储在 localStorage 中的 message
             getPlayMessage() {
                 return localStorage.getItem('message');
             },
-            // 获取用户信息
             async fetchUserInfo() {
                 const playerName = this.getPlayerName();
                 const token = this.getPlayToken();
@@ -147,8 +152,7 @@
                     );
                     if (response.data.code === 200) {
                         this.playerInfo = response.data.data;
-                        console.log('用户信息:', this.playerInfo);
-                        this.currentRoomId = this.playerInfo.currentRoomID; // 设置当前房间ID
+                        this.currentRoomId = this.playerInfo.currentRoomID;
                     } else {
                         console.error('获取用户信息出错:', response.data.message);
                     }
@@ -156,9 +160,7 @@
                     console.error('请求出错:', error);
                 }
             },
-            // 移动方法
             async move(direction) {
-                // 清除显示文本的定时器
                 if (this.displayTimeout) {
                     clearTimeout(this.displayTimeout);
                     this.displayTimeout = null;
@@ -173,7 +175,7 @@
                     'west': 2,
                     'north': 3,
                     'stay': 4,
-                    'back': 5 // 添加返回操作
+                    'back': 5
                 };
                 const directionsBack = {
                     'west': 'east',
@@ -196,9 +198,9 @@
                 }
 
                 try {
-                    if (direction === 'back') { // 处理返回操作
+                    if (direction === 'back') {
                         if (this.visitedDirection.length > 0) {
-                            const previousDirection = this.visitedDirection.pop(); // 获取上一个前进方向
+                            const previousDirection = this.visitedDirection.pop();
                             this.backDirection = directionsBack[previousDirection];
                             const response = await axios.post('http://10.78.250.34:8081/room/go', {
                                 playerName: playerName,
@@ -241,20 +243,18 @@
                 this.displayedText = '';
                 this.startTextAnimation();
             },
-            // 文本动画
             startTextAnimation() {
                 let index = 0;
                 const animate = () => {
                     if (index < this.dialogContent.length) {
                         this.displayedText += this.dialogContent[index++];
-                        this.displayTimeout = setTimeout(animate, 50); // 递归调用以逐字显示文本
+                        this.displayTimeout = setTimeout(animate, 50);
                     } else {
                         this.displayTimeout = null;
                     }
                 };
                 animate();
             },
-            // 获取方向文本
             getDirectionText(direction) {
                 const directionTexts = {
                     'east': '东',
@@ -264,15 +264,16 @@
                 };
                 return directionTexts[direction];
             },
-            // 退出游戏
             exitGame() {
+                this.showExitDialog = true;
+            },
+            confirmExit() {
                 localStorage.removeItem('playerName');
                 localStorage.removeItem('token');
-                this.$router.push('/login-main'); // 假设登录页面的路由是 '/login'
+                this.$router.push('/login-main');
             }
         },
         beforeDestroy() {
-            // 组件销毁时清理定时器
             if (this.displayTimeout) {
                 clearTimeout(this.displayTimeout);
                 this.displayTimeout = null;
@@ -356,7 +357,6 @@
         font-size: 18px;
         padding: 10px 10px;
     }
-
 
     .east,
     .west {
