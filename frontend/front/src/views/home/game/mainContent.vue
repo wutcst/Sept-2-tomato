@@ -1,13 +1,22 @@
+<!--
+作者: Tzpeach3
+日期: 2024-06-27
+作用: 展示和操作当前房间内物品的组件，提供物品的提示信息和拿取功能。
+-->
+
 <template>
+    <!-- 主内容容器，背景图根据当前地点的背景图动态变化 -->
     <div class="main-content" :style="{ backgroundImage: `url(${currentLocation.backgroundImage})` }">
         <div class="map">
-            <!-- <img class="location" src="../../../assets/images/Zoo.png" alt="">
-        <h2><span class="locationWord">{{ currentLocation.name }}</span></h2> -->
+            <!-- 判断当前位置是否有物品 -->
             <div v-if="currentLocation.items.length > 0" class="items">
+                <!-- 遍历当前地点的物品 -->
                 <div class="item" v-for="(item, index) in currentLocation.items" :key="item.id + '-' + index"
                     @mouseenter="showTooltip(index)" @mouseleave="hideTooltip">
+                    <!-- 物品图片和名称 -->
                     <img :src="item.imageId" :alt="item.name" />
                     <p>{{ item.name }}</p>
+                    <!-- 物品信息的提示框 -->
                     <div v-if="tooltipIndex === index && !takingItem" class="tooltip">
                         <p>名称: {{ item.name }}</p>
                         <p>描述: {{ item.description }}</p>
@@ -19,16 +28,19 @@
                             '一次性物品'
                             }}
                         </p>
+                        <!-- 拿取按钮 -->
                         <button @click.stop="takeItem(index)">拿取</button>
                     </div>
                 </div>
             </div>
             <div v-else>
+                <!-- 没有物品时显示的信息 -->
                 <p>当前位置没有可获取的物品。</p>
             </div>
         </div>
     </div>
 </template>
+
 <script>
     import axios from 'axios';
     import mapImage from '../../../assets/images/map.jpg';
@@ -91,11 +103,12 @@
                     4: { id: 4, name: '生肉', imageId: meatImage, color: '#ffcc99', borderColor: '#cc9966' },
                     5: { id: 5, name: '大便', imageId: shitImage, color: '#ffcc99', borderColor: '#cc9966' }
                 },
-                tooltipIndex: null,
-                takingItem: false
+                tooltipIndex: null, // 当前提示框的索引
+                takingItem: false // 是否正在拿取物品的标志
             };
         },
         computed: {
+            // 计算当前地点
             currentLocation() {
                 return this.locationMap[this.currentRoomId] || this.locationMap[1];
             }
@@ -103,9 +116,9 @@
         watch: {
             currentRoomId: {
                 handler(newVal) {
-                    this.updateLocation(newVal);
+                    this.updateLocation(newVal); // 房间ID变化时更新当前地点信息
                 },
-                immediate: true
+                immediate: true // 立即执行监听器
             }
         },
         created() {
@@ -125,6 +138,7 @@
                     this.updateLocation(this.currentRoomId); // 放下物品后更新当前位置的物品列表
                 });
             },
+            // 更新当前地点的物品列表
             updateLocation(roomId) {
                 const token = localStorage.getItem('token'); // 获取用户 token
                 axios.post('http://10.78.250.34:8081/room/check',
@@ -153,20 +167,15 @@
                         console.error('获取物品列表出错:', error);
                     });
             },
+            // 显示提示框
             showTooltip(index) {
                 this.tooltipIndex = index;
             },
+            // 隐藏提示框
             hideTooltip() {
                 this.tooltipIndex = null;
             },
-            // confirmTakeItem(index) {
-            //   this.takingItem = true;
-            //   const item = this.currentLocation.items[index];
-            //   if (confirm(`你确定要拿取 ${item.name} 吗?`)) {
-            //     this.takeItem(index);
-            //   }
-            //   this.takingItem = false;
-            // },
+            // 拿取物品
             takeItem(index) {
                 const item = this.currentLocation.items[index];
                 const token = localStorage.getItem('token'); // 获取用户 token
@@ -181,7 +190,6 @@
                     .then(response => {
                         const responseData = response.data;
                         if (responseData.code === 200) {
-                            // alert(`你拿到了${item.name}`);
                             localStorage.setItem('message', `你成功拿取${item.name}`);
                             this.currentLocation.items.splice(index, 1); // 更新前端物品列表
                             this.$root.$emit('take-item'); // 通知主组件拿走物品

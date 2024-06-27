@@ -1,11 +1,19 @@
+<!--
+作者：Tzpeach3
+时间：2024-06-27
+描述：侧边栏组件，用于显示玩家背包内容和处理物品操作。
+-->
+
 <template>
     <div class="sidebar">
         <p>当前负重: {{ usedWeight }}/{{ totalWeight }}</p>
         <div class="inventory">
+            <!-- 循环显示背包中的物品 -->
             <div class="item" v-for="(item, index) in displayedInventory" :key="item.itemID + '-' + index"
                 @mouseenter="showTooltip(index)" @mouseleave="hideTooltip" @click.stop="toggleDropConfirmation(index)"
                 :style="{ backgroundColor: item.color, border: '1px solid ' + item.borderColor }">
                 <img :src="item.imageId" :alt="item.name" />
+                <!-- 显示物品信息 -->
                 <div v-if="tooltipIndex === index && !confirmingDrop" class="tooltip">
                     <p>名称: {{ item.itemName }}</p>
                     <p>描述: {{ item.description }}</p>
@@ -17,13 +25,16 @@
                         '一次性物品'
                         }}
                     </p>
+                    <!-- 操作按钮 -->
                     <button @click.stop="dropItem(index)">放下</button>
                     <button @click.stop="useItem(index)">使用</button>
                     <button @click.stop="feedItem(index)">投喂</button>
                 </div>
             </div>
+            <!-- 空格子占位 -->
             <div class="item empty" v-for="n in emptySlots" :key="'empty-' + n"></div>
         </div>
+        <!-- 地图图层组件 -->
         <MapLayer :visible="isMapLayerVisible" @close="isMapLayerVisible = false" />
     </div>
 </template>
@@ -192,18 +203,27 @@
                     });
             },
             fetchInventoryItems() {
+                // 获取本地存储的用户 token
                 const token = localStorage.getItem('token');
+                // 获取本地存储的玩家名称
                 const playerName = localStorage.getItem('playerName');
+                
+                // 发起 POST 请求获取玩家背包中的物品信息
                 axios.post('http://10.78.250.34:8081/item/getItems', { playerName }, { headers: { 'token': token } })
                     .then(response => {
+                        // 如果返回的状态码为 200，则表示请求成功
                         if (response.data.code === 200) {
+                            // 将返回的物品列表数据赋值给组件的 inventory 数据属性
                             this.inventory = response.data.data;
+                            // 计算当前背包中已使用的总重量
                             this.usedWeight = this.inventory.reduce((acc, item) => acc + item.weight, 0);
                         } else {
+                            // 如果请求失败，输出错误信息到控制台
                             console.error('获取背包物品失败:', response.data.message);
                         }
                     })
                     .catch(error => {
+                        // 如果请求出现错误，输出错误信息到控制台
                         console.error('获取背包物品出错:', error);
                     });
             },
