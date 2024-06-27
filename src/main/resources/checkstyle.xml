@@ -24,6 +24,13 @@
             <property name="excludeScope" value="protected,package,private"/>
         </module>
 
+        <!-- 禁用 NeedBraces 检查 -->
+        <module name="TreeWalker">
+            <module name="NeedBraces">
+                <property name="tokens" value="LITERAL_IF"/>
+            </module>
+        </module>
+
         <!-- 其他规则 -->
     </module>
 </module>

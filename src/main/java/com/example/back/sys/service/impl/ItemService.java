@@ -92,7 +92,7 @@ public class ItemService implements IItemService {
             System.out.println(item.getIsMagic());
             itemMapper.renewPlayerItem_delete(player, item);
             itemMapper.renewPlayer(player, item);
-        } catch (Exception e) {
+        } catch (RuntimeException  e) {
             return false;
         }
         return true;

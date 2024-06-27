@@ -77,7 +77,6 @@ public class PlayerController {
 
     /**
      * 玩家注册。
-     *
      * @param player 包含玩家信息的 Player 对象。
      * @return 包含注册结果的 Result 对象。
      */

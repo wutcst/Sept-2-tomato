@@ -21,7 +21,7 @@ public class TokenGenerate {
                     .withClaim("username", username)
                     .withExpiresAt(expiresAt)
                     .sign(Algorithm.HMAC256(TOKEN_SECRET));
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
         return token;
@@ -44,7 +44,7 @@ public class TokenGenerate {
             System.out.println("username: " + jwt.getClaim("username").asString());
             System.out.println("过期时间：      " + jwt.getExpiresAt());
             return true;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             System.out.println("没通过");
             return false;
         }

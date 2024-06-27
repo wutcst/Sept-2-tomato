@@ -32,7 +32,6 @@ public class RoomController {
 
     /**
      * 在指定方向移动玩家。
-     *
      * @param playerName 玩家名称。
      * @param direction  移动的方向（0：东，1：南，2：西，3：北）。
      * @return 表示移动成功或失败的 Result 对象。

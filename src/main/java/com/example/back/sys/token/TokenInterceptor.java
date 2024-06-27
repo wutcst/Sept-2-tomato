@@ -30,7 +30,6 @@ public class TokenInterceptor implements HandlerInterceptor {
             }
         }
         response.setCharacterEncoding("UTF-8");
-        PrintWriter out = null;
         System.out.println("认证失败，token错误或不存在");
         response.getWriter().write("认证失败,token不存在");
         return false;
