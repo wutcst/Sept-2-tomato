@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 控制物品操作的控制器。
+ */
 @Slf4j
 @CrossOrigin
 @RestController

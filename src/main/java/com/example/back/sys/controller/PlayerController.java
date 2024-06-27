@@ -14,7 +14,9 @@ import java.util.Random;
 
 import lombok.extern.slf4j.Slf4j;
 
-
+/**
+ * 控制玩家操作的控制器。
+ */
 @Slf4j
 @CrossOrigin
 @RestController

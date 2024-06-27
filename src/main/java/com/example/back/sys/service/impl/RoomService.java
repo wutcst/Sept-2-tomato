@@ -14,6 +14,9 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 房间服务的实现类，提供对房间信息和房间内物品的操作服务。
+ */
 @Service
 public class RoomService implements IRoomService {
 

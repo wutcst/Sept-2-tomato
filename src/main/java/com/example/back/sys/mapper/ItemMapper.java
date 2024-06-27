@@ -6,6 +6,9 @@ import com.example.back.sys.entity.PlayerItems;
 
 import java.util.List;
 
+/**
+ * Item 数据访问层接口，定义了与物品相关的数据库操作方法。
+ */
 public interface ItemMapper {
 
     Item getItemById(Integer itemID);

@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * 物品实体类。
+ */
 @Data
 @ToString
 @AllArgsConstructor

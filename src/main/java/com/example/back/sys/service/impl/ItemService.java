@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+/**
+ * ItemService 是处理物品相关业务逻辑的服务类。
+ */
 @Service
 public class ItemService implements IItemService {
 

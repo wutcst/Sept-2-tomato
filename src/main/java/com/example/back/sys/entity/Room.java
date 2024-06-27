@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 房间实体类。
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

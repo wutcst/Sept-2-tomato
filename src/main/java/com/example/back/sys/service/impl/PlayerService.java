@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * 玩家服务的实现类，提供对玩家信息的操作服务。
+ */
 @Service
 public class PlayerService implements IPlayerService {
 

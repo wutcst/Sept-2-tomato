@@ -4,6 +4,9 @@ import com.example.back.sys.entity.Player;
 
 import java.util.List;
 
+/**
+ * Player 数据访问层接口，定义了与玩家相关的数据库操作方法。
+ */
 public interface PlayerMapper {
 
     List<Player> getAllPlayers();

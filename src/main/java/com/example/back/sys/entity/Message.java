@@ -2,6 +2,9 @@ package com.example.back.sys.entity;
 
 import lombok.Data;
 
+/**
+ * 消息实体类。
+ */
 @Data
 public class Message {
     private String type;

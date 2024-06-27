@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Random;
 
+/**
+ * 玩家实体类。
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

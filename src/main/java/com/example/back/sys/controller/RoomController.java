@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+/**
+ * 控制房间相关操作的控制器。
+ */
 @CrossOrigin
 @RestController
 @RequestMapping("/room")
