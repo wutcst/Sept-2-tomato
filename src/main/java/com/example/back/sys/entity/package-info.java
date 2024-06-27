@@ -5,7 +5,7 @@
  * 实体类用于映射数据库表的结构，通常包含字段的定义、关联关系等。
  * </p>
  *
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  */
 package com.example.back.sys.entity;

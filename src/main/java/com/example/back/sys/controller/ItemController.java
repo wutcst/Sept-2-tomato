@@ -30,6 +30,7 @@ public class ItemController {
 
     /**
      * 根据物品ID获取物品信息。
+     *
      * @param itemID 物品ID。
      * @return 包含物品信息的 Result 对象。
      */
@@ -44,6 +45,7 @@ public class ItemController {
 
     /**
      * 玩家根据物品ID拿起物品。
+     *
      * @param request 包含itemID和playerName的请求体Map。
      * @return 包含玩家信息的 Result 对象。
      */
@@ -71,6 +73,7 @@ public class ItemController {
 
     /**
      * 玩家根据物品ID丢弃物品。
+     *
      * @param request 包含itemID和playerName的请求体Map。
      * @return 包含玩家信息的 Result 对象。
      */
@@ -89,18 +92,19 @@ public class ItemController {
         // 玩家没有这个物品
         if (!itemService.checkItem(player.getPlayerID(), itemID)) return Result.fail("玩家没有该物品");
 
-        player.setCurrentWeight(player.getCurrentWeight()-item.getWeight());
+        player.setCurrentWeight(player.getCurrentWeight() - item.getWeight());
         if (!itemService.dropItem(player, item)) return Result.fail("服务器原因，丢弃失败");
         return Result.success(player);
     }
 
     /**
      * 玩家根据姓名查询身上物品。
+     *
      * @param request 包含playerName的请求体Map。
      * @return 包含物品信息的 Result 对象。
      */
     @PostMapping("/getItems")
-    public Result checkItemsInBag(@RequestBody Map<String,Object> request){
+    public Result checkItemsInBag(@RequestBody Map<String, Object> request) {
         String playerName = (String) request.get("playerName");
         Player player = playerService.findByPlayerName(playerName);
 
@@ -114,11 +118,12 @@ public class ItemController {
 
     /**
      * 玩家使用身上物品。
+     *
      * @param request 包含ItemID和playerName的请求体Map。
      * @return 包含返回的 Result 对象。
      */
     @PostMapping("/use")
-    public Result feedItems(@RequestBody Map<String,Object> request){
+    public Result feedItems(@RequestBody Map<String, Object> request) {
         String playerName = (String) request.get("playerName");
         Integer itemID = (Integer) request.get("itemID");
 
@@ -132,18 +137,19 @@ public class ItemController {
         // 玩家没有这个物品
         if (!itemService.checkItem(player.getPlayerID(), itemID)) return Result.fail("玩家没有该物品");
 
-        if(item.getIsMagic()==2) return Result.success("不能吃掉地图！");
-        if(!itemService.eatItem(player, item)) return Result.fail("服务器原因，食用失败");
-        return Result.success("食用成功，你吃掉了"+item.getItemName());
+        if (item.getIsMagic() == 2) return Result.success("不能吃掉地图！");
+        if (!itemService.eatItem(player, item)) return Result.fail("服务器原因，食用失败");
+        return Result.success("食用成功，你吃掉了" + item.getItemName());
     }
 
     /**
      * 玩家使用身上物品。
+     *
      * @param request 包含ItemID和playerName的请求体Map。
      * @return 包含返回的 Result 对象。
      */
     @PostMapping("/feed")
-    public Result giveItems(@RequestBody Map<String,Object> request){
+    public Result giveItems(@RequestBody Map<String, Object> request) {
         String playerName = (String) request.get("playerName");
         Integer itemID = (Integer) request.get("itemID");
 
@@ -157,17 +163,17 @@ public class ItemController {
         // 玩家没有这个物品
         if (!itemService.checkItem(player.getPlayerID(), itemID)) return Result.fail("玩家没有该物品");
 
-        Integer effectNum = itemService.getItemEffectNum(player.getCurrentRoomID(),itemID);
+        Integer effectNum = itemService.getItemEffectNum(player.getCurrentRoomID(), itemID);
 
-        String res = itemService.getItemEffectDescription(player.getCurrentRoomID(),itemID);
-        if(res==null) res = item.getItemName()+"在这使用没有任何效果";
-        else{
-            player.setCurrentWeight(player.getCurrentWeight()-item.getWeight());
-            if(effectNum==1) {
+        String res = itemService.getItemEffectDescription(player.getCurrentRoomID(), itemID);
+        if (res == null) res = item.getItemName() + "在这使用没有任何效果";
+        else {
+            player.setCurrentWeight(player.getCurrentWeight() - item.getWeight());
+            if (effectNum == 1) {
                 player.enterRandomRoom();
                 roomService.updatePlayer(player);
             }
-            itemService.feedItem(player,item);
+            itemService.feedItem(player, item);
         }
 
         return Result.success(res);

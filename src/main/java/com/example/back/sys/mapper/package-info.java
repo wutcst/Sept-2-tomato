@@ -5,7 +5,7 @@
  * 映射器类通常使用ORM框架（如MyBatis）来简化数据库操作，实现数据的持久化和查询。
  * </p>
  *
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  */
 package com.example.back.sys.mapper;

@@ -5,7 +5,7 @@
  * 控制器类不包含具体的业务逻辑，主要负责请求的路由和参数的处理，然后将处理结果返回给客户端。
  * </p>
  *
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  */
 package com.example.back.sys.controller;

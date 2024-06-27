@@ -136,9 +136,16 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.4.2.2</version>
+				<version>4.4.2.2</version> <!-- 或者你希望使用的 SpotBugs 版本 -->
+				<configuration>
+					<effort>Max</effort> <!-- 可选配置 -->
+					<threshold>Low</threshold> <!-- 可选配置 -->
+					<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile> <!-- 引用过滤规则文件 -->
+				</configuration>
 				<executions>
 					<execution>
+						<id>spotbugs-check</id>
+						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>

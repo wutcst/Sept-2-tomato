@@ -37,7 +37,7 @@ public class RoomService implements IRoomService {
     public List<Item> checkItemsInRoom(Integer roomID) {
         List<Object> ll = roomMapper.checkItemsInRoom(roomID);
         List<Item> res = new ArrayList<>();
-        for(Object i:ll){
+        for (Object i : ll) {
             res.add(itemMapper.getItemById((Integer) i));
         }
 

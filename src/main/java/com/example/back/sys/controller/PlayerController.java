@@ -26,6 +26,7 @@ public class PlayerController {
 
     /**
      * 获取所有玩家信息。
+     *
      * @return 包含所有玩家信息的 Result 对象。
      */
     @GetMapping("/")
@@ -37,6 +38,7 @@ public class PlayerController {
 
     /**
      * 根据玩家姓名获取玩家信息。
+     *
      * @param playerNameJson 包含玩家姓名的 JSON 字符串。
      * @return 包含玩家信息的 Result 对象。
      */
@@ -52,6 +54,7 @@ public class PlayerController {
 
     /**
      * 玩家登录。
+     *
      * @param player 包含玩家信息的 Player 对象。
      * @return 包含登录结果和 token 的 Result 对象。
      */
@@ -72,6 +75,7 @@ public class PlayerController {
 
     /**
      * 玩家注册。
+     *
      * @param player 包含玩家信息的 Player 对象。
      * @return 包含注册结果的 Result 对象。
      */
@@ -89,6 +93,7 @@ public class PlayerController {
 
     /**
      * 重置玩家密码。
+     *
      * @param player 包含玩家信息的 Player 对象。
      * @return 包含重置结果的 Result 对象。
      */
@@ -103,7 +108,6 @@ public class PlayerController {
         log.info("玩家密码重置失败，玩家姓名：" + player.getPlayerName());
         return Result.fail("服务器异常，修改失败");
     }
-
 
 
 }

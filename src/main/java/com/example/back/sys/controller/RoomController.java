@@ -29,8 +29,9 @@ public class RoomController {
 
     /**
      * 在指定方向移动玩家。
+     *
      * @param playerName 玩家名称。
-     * @param direction 移动的方向（0：东，1：南，2：西，3：北）。
+     * @param direction  移动的方向（0：东，1：南，2：西，3：北）。
      * @return 表示移动成功或失败的 Result 对象。
      */
     private Result move(String playerName, Integer direction) {
@@ -71,6 +72,7 @@ public class RoomController {
 
     /**
      * 接收前端请求，处理向指定方向移动的操作。
+     *
      * @param request 包含玩家名称和移动方向的请求数据。
      * @return 表示移动结果的 Result 对象。
      */
@@ -85,6 +87,7 @@ public class RoomController {
 
     /**
      * 接收前端请求，处理向相反方向移动的操作。
+     *
      * @param request 包含玩家名称和移动方向的请求数据。
      * @return 表示移动结果的 Result 对象。
      */
@@ -98,6 +101,7 @@ public class RoomController {
 
     /**
      * 获取指定房间内的所有物品信息。
+     *
      * @param request 包含房间ID的请求数据。
      * @return 包含物品信息的 Result 对象。
      */

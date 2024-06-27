@@ -5,7 +5,7 @@
  * WebSocket类通常用于实现聊天应用、实时数据更新等需要低延迟和高实时性的场景。
  * </p>
  *
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  */
 package com.example.back.sys.websocket;

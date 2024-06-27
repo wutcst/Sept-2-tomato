@@ -5,7 +5,7 @@
  * 令牌类通常用于保护和管理应用程序的安全性，确保只有经过身份验证的用户才能访问受保护的资源。
  * </p>
  *
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  */
 package com.example.back.sys.token;

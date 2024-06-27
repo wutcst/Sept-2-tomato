@@ -9,28 +9,31 @@ import java.util.Date;
 
 public class TokenGenerate {
 
-    private static final Integer EXPIRE_TIME= 120*60*1000;
-    private static final String TOKEN_SECRET="tokenqkj";  //密钥盐
-    public String generateToken(String username){
+    private static final Integer EXPIRE_TIME = 120 * 60 * 1000;
+    private static final String TOKEN_SECRET = "tokenqkj";  //密钥盐
+
+    public String generateToken(String username) {
         String token = null;
-        try{
+        try {
             Date expiresAt = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             token = JWT.create()
                     .withIssuer("auth0")
                     .withClaim("username", username)
                     .withExpiresAt(expiresAt)
                     .sign(Algorithm.HMAC256(TOKEN_SECRET));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return token;
     }
+
     /**
      * 验证令牌的签名是否有效。
+     *
      * @param token 要验证的令牌字符串
      * @return 如果签名有效返回 true，否则返回 false
      */
-    public static boolean verify(String token){
+    public static boolean verify(String token) {
         System.out.println("执行了token验证代码");
 
         try {
@@ -41,7 +44,7 @@ public class TokenGenerate {
             System.out.println("username: " + jwt.getClaim("username").asString());
             System.out.println("过期时间：      " + jwt.getExpiresAt());
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("没通过");
             return false;
         }

@@ -26,16 +26,16 @@ public class PlayerService implements IPlayerService {
 
     @Override
     public boolean login(Player player) {
-        return playerMapper.judgeExist(player).size()!=0;
+        return playerMapper.judgeExist(player).size() != 0;
     }
 
     @Override
-    public boolean register(Player player){
+    public boolean register(Player player) {
         return playerMapper.registerPlayer(player);
     }
 
     @Override
-    public boolean renewPlayer(Player player){
+    public boolean renewPlayer(Player player) {
         return playerMapper.renewPlayer(player);
     }
 

@@ -19,7 +19,7 @@ public class Player {
     private String playerName;
     private String passWord;
 
-    public void enterRandomRoom(){
+    public void enterRandomRoom() {
         Random rand = new Random();
         this.setCurrentRoomID(rand.nextInt(6));
     }

@@ -12,9 +12,9 @@ import java.io.PrintWriter;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)throws Exception{
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //Axios 发起跨域请求前,浏览器也会首先发起 OPTIONS 预检请求。检查服务器是否允许跨域访问。
-        if(request.getMethod().equals("OPTIONS")){
+        if (request.getMethod().equals("OPTIONS")) {
             response.setStatus(HttpServletResponse.SC_OK);
             System.out.println("允许跨域访问");
             return true;
@@ -22,9 +22,9 @@ public class TokenInterceptor implements HandlerInterceptor {
 
         response.setCharacterEncoding("utf-8");
         String token = request.getHeader("token");
-        if(token != null){
+        if (token != null) {
             boolean result = TokenGenerate.verify(token);
-            if(result){
+            if (result) {
                 System.out.println("通过拦截器");
                 return true;
             }
