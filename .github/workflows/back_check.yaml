@@ -38,10 +38,6 @@ jobs:
       run: mvn checkstyle:check
       continue-on-error: true
 
-    - name: Run PMD
-      run: mvn pmd:check
-      continue-on-error: true
-
     - name: Run SpotBugs
       run: mvn spotbugs:check
       continue-on-error: true
