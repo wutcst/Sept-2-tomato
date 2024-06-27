@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="com.example.ignore.MyClass"/>
+    </Match>
+    <Match>
+        <Class name="~.*Generated.*"/>
+    </Match>
+</FindBugsFilter>

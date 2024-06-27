@@ -122,11 +122,11 @@
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
 				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.4.2.2</version> <!-- 或者你希望使用的 SpotBugs 版本 -->
+				<version>4.4.2.2</version>
 				<configuration>
-					<effort>Max</effort> <!-- 可选配置 -->
-					<threshold>Low</threshold> <!-- 可选配置 -->
-					<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile> <!-- 引用过滤规则文件 -->
+					<effort>Max</effort>
+					<threshold>Low</threshold>
+					<excludeFilterFile>src/main/resources/spotbugs-exclude.xml</excludeFilterFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -138,6 +138,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
