@@ -1,6 +1,9 @@
 name: Build and Deploy
 
-on: [push]
+on:
+  push:
+    branches:
+      - Front-end-packaging-and-deployment  # Adjust branch name as per your setup
 
 permissions:
   contents: write
@@ -16,10 +19,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # 使用你项目需要的Node.js版本
+          node-version: '16'  # Use the Node.js version required by your project
 
       - name: Install Dependencies
         run: npm install
+
+      - name: Compile TypeScript
+        run: npm run compile  # Replace with your TypeScript compilation command
 
       - name: Fix ESLint Configuration
         run: |
@@ -35,4 +41,4 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist # The folder the action should deploy.
+          folder: dist  # The folder the action should deploy.
