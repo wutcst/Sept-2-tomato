@@ -13,9 +13,24 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # 使用你项目需要的Node.js版本
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Fix ESLint Configuration
+        run: |
+          echo "module.exports = { root: true, env: { node: true }, extends: ['plugin:vue/essential', 'eslint:recommended'], parserOptions: { ecmaVersion: 2020 }, rules: { 'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off', 'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off', }, };" > .eslintrc.js
+
+      - name: Fix vulnerabilities
+        run: npm audit fix
+
       - name: Install and Build 🔧
         run: |
-          npm ci
+          npm install
           npm run build
 
       - name: Deploy 🚀
