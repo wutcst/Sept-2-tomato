@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - Front-end-packaging-and-deployment  # Adjust branch name as per your setup
+      - master  # Adjust branch name as per your setup
 
 permissions:
   contents: write
