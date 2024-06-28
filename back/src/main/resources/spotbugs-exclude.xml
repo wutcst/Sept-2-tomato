@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- 忽略 DMI_RANDOM_USED_ONLY_ONCE 错误 -->
+    <Match>
+        <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE" />
+        <Bug code="DMI_RANDOM_USED_ONLY_ONCE" />
+    </Match>
+
+    <!-- 忽略 AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION 错误 -->
+    <Match>
+        <Bug pattern="AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION" />
+        <Bug code="AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION" />
+    </Match>
+</FindBugsFilter>
