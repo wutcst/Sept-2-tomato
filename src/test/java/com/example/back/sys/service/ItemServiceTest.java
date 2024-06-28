@@ -20,7 +20,6 @@ import static org.mockito.Mockito.*;
  * ItemServiceTest 是针对 ItemService 类的单元测试类。
  */
 public class ItemServiceTest {
-
     @Mock
     private ItemMapper itemMapper;
 
