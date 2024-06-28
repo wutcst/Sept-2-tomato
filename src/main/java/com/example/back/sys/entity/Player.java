@@ -22,9 +22,10 @@ public class Player {
     private String playerName;
     private String passWord;
 
+    private int ROOM_NUM = 6;
     public void enterRandomRoom() {
         Random rand = new Random();
-        this.setCurrentRoomID(rand.nextInt(6));
+        this.setCurrentRoomID(rand.nextInt(ROOM_NUM));
     }
 
 }
