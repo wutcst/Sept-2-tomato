@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL(' https://wutcst.github.io/Sept-2-tomato/src', import.meta.url))
     }
   }
 })
